@@ -30,7 +30,7 @@ public class TaskManager {
             SubTask subTask = (SubTask) task;
             subtasks.put(subTask.getId(), subTask);
             //добавляем родителя
-            epics.put(subTask.getParent().getId(), subTask.getParent());
+            epics.put(subTask.getEpic().getId(), subTask.getEpic());
         }
         if (task.getClass() == Task.class) {
             tasks.put(task.getId(), task);
@@ -102,7 +102,7 @@ public class TaskManager {
     public void updateSubTask(SubTask subtask) {
         if (subtasks.containsKey(subtask.getId())) {
             subtasks.put(subtask.getId(), subtask);
-            subtask.getParent().updateStatus();// на случай если мы создадим
+            subtask.getEpic().updateStatus();// на случай если мы создадим
         }
     }
 

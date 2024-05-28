@@ -1,3 +1,5 @@
+import models.Epic;
+import models.SubTask;
 import models.Task;
 
 public class Main {
@@ -20,5 +22,16 @@ public class Main {
         tm.updateTask(task1);
         boolean res4 = tm.getTask(task1.getId()).equals(task1);
         if (res4) System.out.println("TASK:обновление - ок");
+        // Epic functions test
+        Epic epic = new Epic(tm.getNextIndex(), "Эпик 1", "делай большое дело 1");
+        Epic epic2 = new Epic(tm.getNextIndex(), "Эпик 2", "делай большое дело 1");
+        SubTask subTask1 = new SubTask(tm.getNextIndex(), "подзадача 1", "делай маленькое дело 1", epic);
+        SubTask subTask2 = new SubTask(tm.getNextIndex(), "подзадача 2", "делай маленькое дело 2", epic2);
+        SubTask subTask3 = new SubTask(tm.getNextIndex(), "подзадача 3", "делай маленькое дело 3", epic2);
+        tm.addTask(subTask1);
+        tm.addTask(subTask2);
+        tm.addTask(subTask3);
+        tm.addTask(epic);
+        tm.addTask(epic2);
     }
 }

@@ -1,28 +1,28 @@
 package models;
 
 public class SubTask extends Task {
-    private Epic parent;
+    private Epic epic;
 
-    public SubTask(int id, String name, String details, Epic parent) {
+    public SubTask(int id, String name, String details, Epic epic) {
         super(id, name, details);
-        this.parent = parent;
-        parent.addSubTask(this);
+        this.epic = epic;
+        epic.addSubTask(this);
     }
 
-    public Epic getParent() {
-        return parent;
+    public Epic getEpic() {
+        return epic;
     }
 
-    public void setParent(Epic parent) {
-        this.parent.removeSubTask(this);
-        this.parent = parent;
-        this.parent.addSubTask(this);
+    public void setEpic(Epic epic) {
+        this.epic.removeSubTask(this);
+        this.epic = epic;
+        this.epic.addSubTask(this);
     }
 
     /**
      * Метод для вызова перед удалением, убираем ссылку из parent сущности
      */
     public void onBeforeDelete() {
-        parent.removeSubTask(this);
+        epic.removeSubTask(this);
     }
 }
