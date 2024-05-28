@@ -2,6 +2,7 @@ import models.Epic;
 import models.SubTask;
 import models.Task;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class TaskManager {
@@ -18,22 +19,20 @@ public class TaskManager {
     }
 
     public void addTask(Task task) {
-        if (task.getClass() == Epic.class) {
-            Epic epic = (Epic) task;
-            epics.put(epic.getId(), epic);
-            //добавляем связанные сабтаски
-            for (SubTask subTask : epic.getSubTasks()) {
-                subtasks.put(subTask.getId(), subTask);
-            }
-        }
-        if (task.getClass() == SubTask.class) {
-            SubTask subTask = (SubTask) task;
+        tasks.put(task.getId(), task);
+    }
+
+    public void addSubTask(SubTask subTask) {
+        subtasks.put(subTask.getId(), subTask);
+        //добавляем родителя
+        epics.put(subTask.getEpic().getId(), subTask.getEpic());
+    }
+
+    public void addEpic(Epic epic) {
+        epics.put(epic.getId(), epic);
+        //добавляем связанные сабтаски
+        for (SubTask subTask : epic.getSubTasks()) {
             subtasks.put(subTask.getId(), subTask);
-            //добавляем родителя
-            epics.put(subTask.getEpic().getId(), subTask.getEpic());
-        }
-        if (task.getClass() == Task.class) {
-            tasks.put(task.getId(), task);
         }
     }
 
@@ -102,7 +101,6 @@ public class TaskManager {
     public void updateSubTask(SubTask subtask) {
         if (subtasks.containsKey(subtask.getId())) {
             subtasks.put(subtask.getId(), subtask);
-            subtask.getEpic().updateStatus();// на случай если мы создадим
         }
     }
 
@@ -121,5 +119,9 @@ public class TaskManager {
 
     public int getNextIndex() {
         return index++;
+    }
+
+    public ArrayList<SubTask> getEpicSubTasks(Epic epic) {
+        return epic.getSubTasks();
     }
 }

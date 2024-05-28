@@ -19,6 +19,12 @@ public class SubTask extends Task {
         this.epic.addSubTask(this);
     }
 
+    @Override
+    public void setStatus(TaskStatus status) {
+        super.setStatus(status);
+        this.epic.updateStatus();
+    }
+
     /**
      * Метод для вызова перед удалением, убираем ссылку из parent сущности
      */
