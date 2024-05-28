@@ -19,10 +19,18 @@ public class TaskManager {
 
     public void addTask(Task task) {
         if (task.getClass() == Epic.class) {
-            epics.put(task.getId(), (Epic) task);
+            Epic epic = (Epic) task;
+            epics.put(epic.getId(), epic);
+            //добавляем связанные сабтаски
+            for (SubTask subTask : epic.getSubTasks()) {
+                subtasks.put(subTask.getId(), subTask);
+            }
         }
         if (task.getClass() == SubTask.class) {
-            subtasks.put(task.getId(), (SubTask) task);
+            SubTask subTask = (SubTask) task;
+            subtasks.put(subTask.getId(), subTask);
+            //добавляем родителя
+            epics.put(subTask.getParent().getId(), subTask.getParent());
         }
         if (task.getClass() == Task.class) {
             tasks.put(task.getId(), task);
