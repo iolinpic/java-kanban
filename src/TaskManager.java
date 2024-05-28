@@ -113,7 +113,7 @@ public class TaskManager {
     private void onBeforeEpicDelete(Epic epic) {
         if (epic == null) return;
         for (SubTask subtask : epic.getSubTasks()) {
-            deleteSubTask(subtask.getId());
+            subtasks.remove(subtask.getId());
         }
     }
 
