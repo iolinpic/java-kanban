@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class TaskManager {
-    HashMap<Integer, Task> tasks;
-    HashMap<Integer, SubTask> subtasks;
-    HashMap<Integer, Epic> epics;
+    private final HashMap<Integer, Task> tasks;
+    private final HashMap<Integer, SubTask> subtasks;
+    private final HashMap<Integer, Epic> epics;
     private int index;
 
     TaskManager() {
@@ -111,7 +111,9 @@ public class TaskManager {
     }
 
     private void onBeforeEpicDelete(Epic epic) {
-        if (epic == null) return;
+        if (epic == null) {
+            return;
+        }
         for (SubTask subtask : epic.getSubTasks()) {
             subtasks.remove(subtask.getId());
         }
