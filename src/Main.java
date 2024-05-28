@@ -8,8 +8,8 @@ public class Main {
     public static void main(String[] args) {
         TaskManager tm = new TaskManager();
         // TASK functions test
-        Task task1 = new Task(tm.getNextIndex(), "задача 1", "делай дело 1");
-        Task task2 = new Task(tm.getNextIndex(), "задача 2", "делай дело 2");
+        Task task1 = new Task("задача 1", "делай дело 1");
+        Task task2 = new Task("задача 2", "делай дело 2");
         tm.addTask(task1);
         tm.addTask(task2);
         System.out.println(tm.getTasks());
@@ -26,11 +26,11 @@ public class Main {
         if (res4) System.out.println("TASK:обновление - ок");
         System.out.println(tm.getTasks());
         // Epic functions test
-        Epic epic = new Epic(tm.getNextIndex(), "Эпик 1", "делай большое дело 1");
-        Epic epic2 = new Epic(tm.getNextIndex(), "Эпик 2", "делай большое дело 1");
-        SubTask subTask1 = new SubTask(tm.getNextIndex(), "подзадача 1", "делай маленькое дело 1", epic);
-        SubTask subTask2 = new SubTask(tm.getNextIndex(), "подзадача 2", "делай маленькое дело 2", epic2);
-        SubTask subTask3 = new SubTask(tm.getNextIndex(), "подзадача 3", "делай маленькое дело 3", epic2);
+        Epic epic = new Epic("Эпик 1", "делай большое дело 1");
+        Epic epic2 = new Epic("Эпик 2", "делай большое дело 1");
+        SubTask subTask1 = new SubTask("подзадача 1", "делай маленькое дело 1", epic);
+        SubTask subTask2 = new SubTask("подзадача 2", "делай маленькое дело 2", epic2);
+        SubTask subTask3 = new SubTask("подзадача 3", "делай маленькое дело 3", epic2);
         tm.addSubTask(subTask1);
         tm.addEpic(epic2);
         System.out.println(tm.getSubTasks());

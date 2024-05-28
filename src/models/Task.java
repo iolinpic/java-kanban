@@ -3,13 +3,13 @@ package models;
 import java.util.Objects;
 
 public class Task {
-    private final int id;
+    private int id;
     private String name;
     private String details;
     private TaskStatus status;
 
-    public Task(int id, String name, String details) {
-        this.id = id;
+    public Task(String name, String details) {
+        this.id = 0;
         this.name = name;
         this.details = details;
         this.status = TaskStatus.NEW;
@@ -59,5 +59,9 @@ public class Task {
     @Override
     public String toString() {
         return getClass() + " [id=" + id + ", name=" + name + ", status=" + status + "]";
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

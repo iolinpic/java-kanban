@@ -19,21 +19,23 @@ public class TaskManager {
     }
 
     public void addTask(Task task) {
+        task.setId(getNextIndex());
         tasks.put(task.getId(), task);
     }
 
     public void addSubTask(SubTask subTask) {
+        Epic epic = epics.get(subTask.getEpic().getId());
+        if (epic == null) {
+            return;
+        }
+        subTask.setId(getNextIndex());
         subtasks.put(subTask.getId(), subTask);
-        //добавляем родителя
-        epics.put(subTask.getEpic().getId(), subTask.getEpic());
+        epic.addSubTask(subTask);//обновление статуса эпика вызывается внутри добавления
     }
 
     public void addEpic(Epic epic) {
+        epic.setId(getNextIndex());
         epics.put(epic.getId(), epic);
-        //добавляем связанные сабтаски
-        for (SubTask subTask : epic.getSubTasks()) {
-            subtasks.put(subTask.getId(), subTask);
-        }
     }
 
     public Task getTask(int index) {
@@ -100,7 +102,18 @@ public class TaskManager {
 
     public void updateSubTask(SubTask subtask) {
         if (subtasks.containsKey(subtask.getId())) {
+            Epic epic = epics.get(subtask.getEpic().getId());
+            //на случай если мы передали не тот же объект что уже сохранен а его копию с тем же айди
+            boolean isSameObjectLink = subtask == subtasks.get(subtask.getId());
+            if (!isSameObjectLink) {
+                epic.removeSubTask(subtasks.get(subtask.getId()));
+            }
             subtasks.put(subtask.getId(), subtask);
+            if (!isSameObjectLink) {
+                epic.addSubTask(subtask);// добавили новый таск в список заодно и обновили
+            }
+            // если это тот же объект что мы достали из менеджера - то он уже есть в subTasks,
+            // тогда при изменении статуса через setStatus мы запустим обновление связанного epic.
         }
     }
 
@@ -119,7 +132,7 @@ public class TaskManager {
         }
     }
 
-    public int getNextIndex() {
+    private int getNextIndex() {
         return index++;
     }
 
