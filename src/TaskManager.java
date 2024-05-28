@@ -4,6 +4,7 @@ import models.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class TaskManager {
     private final HashMap<Integer, Task> tasks;
@@ -50,16 +51,16 @@ public class TaskManager {
         return epics.get(index);
     }
 
-    public HashMap<Integer, Task> getTasks() {
-        return tasks;
+    public List<Task> getTasks() {
+        return new ArrayList<>(tasks.values());
     }
 
-    public HashMap<Integer, SubTask> getSubTasks() {
-        return subtasks;
+    public List<SubTask> getSubTasks() {
+        return new ArrayList<>(subtasks.values());
     }
 
-    public HashMap<Integer, Epic> getEpics() {
-        return epics;
+    public List<Epic> getEpics() {
+        return new ArrayList<>(epics.values());
     }
 
     public void clearTasks() {
