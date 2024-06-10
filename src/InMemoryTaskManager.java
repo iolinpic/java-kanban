@@ -3,22 +3,23 @@ import models.SubTask;
 import models.Task;
 import models.TaskStatus;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
+
     private final HashMap<Integer, Task> tasks;
     private final HashMap<Integer, SubTask> subtasks;
     private final HashMap<Integer, Epic> epics;
+    private final HistoryManager historyManager;
+
     private int index;
 
-    InMemoryTaskManager() {
+    InMemoryTaskManager(HistoryManager historyManager) {
         index = 1;
         tasks = new HashMap<>();
         subtasks = new HashMap<>();
         epics = new HashMap<>();
+        this.historyManager = historyManager;
     }
 
     @Override
@@ -48,17 +49,23 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task getTask(int index) {
-        return tasks.get(index);
+        Task task = tasks.get(index);
+        historyManager.add(task);
+        return task;
     }
 
     @Override
     public SubTask getSubTask(int index) {
-        return subtasks.get(index);
+        SubTask subTask = subtasks.get(index);
+        historyManager.add(subTask);
+        return subTask;
     }
 
     @Override
     public Epic getEpic(int index) {
-        return epics.get(index);
+        Epic epic = epics.get(index);
+        historyManager.add(epic);
+        return epic;
     }
 
     @Override
@@ -219,5 +226,10 @@ public class InMemoryTaskManager implements TaskManager {
             }
         }
         return true;
+    }
+
+    @Override
+    public List<Task> getHistory() {
+        return historyManager.getHistory();
     }
 }
