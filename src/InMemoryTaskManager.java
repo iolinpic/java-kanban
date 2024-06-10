@@ -164,6 +164,9 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
+    /**
+     * Удаляем сабтаски перед удалением эпика
+     */
     private void onBeforeEpicDelete(Epic epic) {
         if (epic == null) {
             return;
