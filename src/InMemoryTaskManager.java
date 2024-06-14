@@ -42,7 +42,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
         subTask.setId(getNextIndex());
         subtasks.put(subTask.getId(), subTask);
-        epic.addSubTask(subTask.getId());
+        epic.addSubTask(subTask);
         updateEpicStatus(epic);
     }
 
@@ -136,9 +136,9 @@ public class InMemoryTaskManager implements TaskManager {
             if (!oldSubtask.getEpicId().equals(subtask.getEpicId())) {
                 //если в старом сабтаске был другой епик
                 Epic oldEpic = epics.get(oldSubtask.getEpicId());
-                oldEpic.removeSubTask(oldSubtask.getId());
+                oldEpic.removeSubTask(oldSubtask);
                 updateEpicStatus(oldEpic);
-                epic.addSubTask(subtask.getId());
+                epic.addSubTask(subtask);
             }
             subtasks.put(subtask.getId(), subtask);
             updateEpicStatus(epic);
@@ -157,7 +157,14 @@ public class InMemoryTaskManager implements TaskManager {
                     }
                 }
                 //по идее мы не можем переложить внутрь эпика чужие сабтаски, обновляя эпик
-                //(тоесть у нас просто не может быть такой ситуации когда есть сабтаска без эпика)
+                //(тоесть у нас просто не может быть такой ситуации когда есть сабтаска без эпика,
+                // а изменение связи эпик сабтаск производим через обновление сабтаска),
+                // тоесть удаляем из списка те сабтаски
+                for (Integer newId : epic.getSubTasks()) {
+                    if (!subtasks.containsKey(newId)) {
+                        epic.getSubTasks().remove(newId);
+                    }
+                }
             }
             epics.put(epic.getId(), epic);
             updateEpicStatus(epic);
@@ -198,7 +205,7 @@ public class InMemoryTaskManager implements TaskManager {
      */
     private void onBeforeSubtaskDelete(SubTask sub) {
         if (sub.getEpicId() != null) {
-            epics.get(sub.getEpicId()).removeSubTask(sub.getEpicId());
+            epics.get(sub.getEpicId()).removeSubTask(sub);
             updateEpicStatus(epics.get(sub.getEpicId()));
         }
     }
