@@ -21,6 +21,6 @@ public class InMemoryHistoryManager implements HistoryManager {
         if (history.size() == HISTORY_SIZE) {
             history.removeFirst();
         }
-        history.add(task);
+        history.add(new Task(task));
     }
 }
