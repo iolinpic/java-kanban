@@ -49,21 +49,21 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task getTask(int index) {
-        Task task = tasks.get(index);
+        Task task = new Task(tasks.get(index));
         historyManager.add(task);
         return task;
     }
 
     @Override
     public SubTask getSubTask(int index) {
-        SubTask subTask = subtasks.get(index);
+        SubTask subTask = new SubTask(subtasks.get(index));
         historyManager.add(subTask);
         return subTask;
     }
 
     @Override
     public Epic getEpic(int index) {
-        Epic epic = epics.get(index);
+        Epic epic = new Epic(epics.get(index));
         historyManager.add(epic);
         return epic;
     }
@@ -191,11 +191,11 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public ArrayList<SubTask> getEpicSubTasks(Epic epic) {
+    public List<SubTask> getEpicSubTasks(Epic epic) {
         ArrayList<Integer> subTaskIds = epic.getSubTasks();
         ArrayList<SubTask> result = new ArrayList<>(subTaskIds.size());
         for (Integer id : subTaskIds) {
-            result.add(subtasks.get(id));
+            result.add(new SubTask(subtasks.get(id)));
         }
         return result;
     }
@@ -214,7 +214,7 @@ public class InMemoryTaskManager implements TaskManager {
      * Функция для обновления статуса в случае изменения сабтасков
      */
     private void updateEpicStatus(Epic epic) {
-        ArrayList<SubTask> subTasks = getEpicSubTasks(epic);
+        List<SubTask> subTasks = getEpicSubTasks(epic);
         if (isStatus(TaskStatus.NEW, subTasks)) {
             epic.setStatus(TaskStatus.NEW);
             return;
@@ -229,7 +229,7 @@ public class InMemoryTaskManager implements TaskManager {
     /**
      * Служебная функция для проверки что у всех сабтасков в списке статус равен переданному
      */
-    private boolean isStatus(TaskStatus status, ArrayList<SubTask> subTasks) {
+    private boolean isStatus(TaskStatus status, List<SubTask> subTasks) {
         for (SubTask subTask : subTasks) {
             if (subTask.getStatus() != status) {
                 return false;
@@ -242,4 +242,6 @@ public class InMemoryTaskManager implements TaskManager {
     public List<Task> getHistory() {
         return historyManager.getHistory();
     }
+
+
 }
