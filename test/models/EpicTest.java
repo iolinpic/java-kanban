@@ -1,7 +1,6 @@
 package models;
 
 import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class EpicTest {
@@ -16,5 +15,13 @@ class EpicTest {
         task4.setId(2);
         assertEquals(task1, task2);
         assertNotEquals(task3, task4);
+    }
+
+    @Test
+    void shouldNotBeAbleToAddEpicAsSubtask() {
+//        Epic task1 = new Epic("task1", "task1");
+//        Epic subtask1 = new Epic("sub1", "sub");
+        //чисто по сигнатуре метода addSubtask(Subtask sub) мы не сможем добавить,
+        //task1.addSubTask(subtask1);
     }
 }
