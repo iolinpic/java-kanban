@@ -149,6 +149,12 @@ public class InMemoryTaskManager implements TaskManager {
     public void update(Epic epic) {
         if (epics.containsKey(epic.getId())) {
             Epic oldEpic = epics.get(epic.getId());
+            // удаляем те индексы что не относятся к сабтаскам
+            for (Integer newId : epic.getSubTasks()) {
+                if (!subtasks.containsKey(newId)) {
+                    epic.getSubTasks().remove(newId);
+                }
+            }
             if (!Arrays.equals(epic.getSubTasks().toArray(), oldEpic.getSubTasks().toArray())) {
                 //удаляем те сабтаски что были в старом но отсутствуют в новом
                 for (Integer oldId : oldEpic.getSubTasks()) {
@@ -159,12 +165,6 @@ public class InMemoryTaskManager implements TaskManager {
                 //по идее мы не можем переложить внутрь эпика чужие сабтаски, обновляя эпик
                 //(тоесть у нас просто не может быть такой ситуации когда есть сабтаска без эпика,
                 // а изменение связи эпик сабтаск производим через обновление сабтаска),
-                // тоесть удаляем из списка те сабтаски
-                for (Integer newId : epic.getSubTasks()) {
-                    if (!subtasks.containsKey(newId)) {
-                        epic.getSubTasks().remove(newId);
-                    }
-                }
             }
             epics.put(epic.getId(), epic);
             updateEpicStatus(epic);
