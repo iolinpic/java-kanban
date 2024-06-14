@@ -70,17 +70,17 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<Task> getTasks() {
-        return new ArrayList<>(tasks.values());
+        return new ArrayList<>(tasks.values().stream().map(Task::new).toList());
     }
 
     @Override
     public List<SubTask> getSubTasks() {
-        return new ArrayList<>(subtasks.values());
+        return new ArrayList<>(subtasks.values().stream().map(SubTask::new).toList());
     }
 
     @Override
     public List<Epic> getEpics() {
-        return new ArrayList<>(epics.values());
+        return new ArrayList<>(epics.values().stream().map(Epic::new).toList());
     }
 
     @Override
