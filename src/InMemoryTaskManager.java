@@ -14,12 +14,12 @@ public class InMemoryTaskManager implements TaskManager {
 
     private int index;
 
-    InMemoryTaskManager(HistoryManager historyManager) {
+    InMemoryTaskManager() {
         index = 1;
         tasks = new HashMap<>();
         subtasks = new HashMap<>();
         epics = new HashMap<>();
-        this.historyManager = historyManager;
+        this.historyManager = Managers.getDefaultHistory();
     }
 
     @Override

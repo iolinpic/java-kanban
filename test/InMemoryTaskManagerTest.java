@@ -14,8 +14,7 @@ class InMemoryTaskManagerTest {
 
     @BeforeEach
     void setUp() {
-        HistoryManager historyManager = new InMemoryHistoryManager();
-        taskManager = new InMemoryTaskManager(historyManager);
+        taskManager = new InMemoryTaskManager();
     }
 
 
@@ -30,7 +29,7 @@ class InMemoryTaskManagerTest {
     void shouldAddEpicAndFindItById() {
         taskManager.addTask(new Epic("epic", "task"));
         assertEquals(1, taskManager.getEpics().size());
-        assertEquals(0, taskManager.getEpics().size());
+        assertEquals(0, taskManager.getTasks().size());
         assertEquals(0, taskManager.getSubTasks().size());
         assertEquals("epic", taskManager.getEpic(1).getName());
     }
