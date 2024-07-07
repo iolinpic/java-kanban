@@ -98,6 +98,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void clearTasks() {
+        for (Task task : tasks.values()) {
+            historyManager.remove(task.getId());
+        }
         tasks.clear();
     }
 
@@ -105,6 +108,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void clearSubTasks() {
         for (SubTask subtask : subtasks.values()) {
             onBeforeSubtaskDelete(subtask);
+            historyManager.remove(subtask.getId());
         }
         subtasks.clear();
     }
@@ -113,24 +117,28 @@ public class InMemoryTaskManager implements TaskManager {
     public void clearEpics() {
         for (Epic epic : epics.values()) {
             onBeforeEpicDelete(epic);
+            historyManager.remove(epic.getId());
         }
         epics.clear();
     }
 
     @Override
     public void deleteTask(int index) {
+        historyManager.remove(index);
         tasks.remove(index);
     }
 
     @Override
     public void deleteSubTask(int index) {
         onBeforeSubtaskDelete(subtasks.get(index));
+        historyManager.remove(index);
         subtasks.remove(index);
     }
 
     @Override
     public void deleteEpic(int index) {
         onBeforeEpicDelete(epics.get(index));
+        historyManager.remove(index);
         epics.remove(index);
     }
 
@@ -172,7 +180,7 @@ public class InMemoryTaskManager implements TaskManager {
                 //удаляем те сабтаски что были в старом но отсутствуют в новом
                 for (Integer oldId : oldEpic.getSubTasks()) {
                     if (!epic.getSubTasks().contains(oldId)) {
-                        subtasks.remove(oldId);
+                        this.deleteSubTask(oldId);
                     }
                 }
                 //по идее мы не можем переложить внутрь эпика чужие сабтаски, обновляя эпик
@@ -192,7 +200,7 @@ public class InMemoryTaskManager implements TaskManager {
             return;
         }
         for (Integer subTaskId : epic.getSubTasks()) {
-            subtasks.remove(subTaskId);
+            this.deleteSubTask(subTaskId);
         }
     }
 
