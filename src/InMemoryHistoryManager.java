@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    private final int HISTORY_SIZE = 10;
     private final LinkedList<Task> history;
 
     InMemoryHistoryManager() {
@@ -18,9 +17,11 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void add(Task task) {
-        if (history.size() == HISTORY_SIZE) {
-            history.removeFirst();
-        }
         history.add(new Task(task));
+    }
+
+    @Override
+    public void remove(int id) {
+        //todo реализовать удаление из очереди
     }
 }
