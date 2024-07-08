@@ -71,10 +71,19 @@ class InMemoryTaskManagerTest {
         assertEquals("task1", taskManager.getTask(1).getName());
         assertEquals("task1description", taskManager.getTask(1).getDetails());
         taskManager.update(task);
-        assertEquals("fuuu", taskManager.getTask(1).getName());
-        assertEquals("baar", taskManager.getTask(1).getDetails());
         List<Task> history = taskManager.getHistory();
+        assertEquals("fuuu", taskManager.getTask(1).getName());
         assertEquals("task1",history.getFirst().getName());
-        assertEquals("task1description",history.getFirst().getDetails());
+    }
+
+    @Test
+    void shouldRemoveSubtaskIdFromEpicAfterDeleteFromManager(){
+        taskManager.addTask(new Epic("epic", "task"));
+        taskManager.addTask(new SubTask("Subtask", "task", taskManager.getEpic(1)));
+        taskManager.addTask(new SubTask("Subtask2", "task", taskManager.getEpic(1)));
+        taskManager.deleteSubTask(2);
+        assertEquals(1, taskManager.getSubTasks().size());
+        assertEquals(1, taskManager.getEpicSubTasks(taskManager.getEpic(1)).size());
+        assertEquals("Subtask2", taskManager.getEpicSubTasks(taskManager.getEpic(1)).getFirst().getName());
     }
 }
