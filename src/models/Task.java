@@ -14,6 +14,13 @@ public class Task {
         this.details = details;
         this.status = TaskStatus.NEW;
     }
+    //конструктор для упрощения тестирования
+    public Task(String name, String details, int id) {
+        this.id = id;
+        this.name = name;
+        this.details = details;
+        this.status = TaskStatus.NEW;
+    }
 
     public Task(Task task) {
         this.id = task.getId();
