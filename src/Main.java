@@ -1,7 +1,6 @@
 import models.Epic;
 import models.SubTask;
 import models.Task;
-import models.TaskStatus;
 
 import java.util.List;
 
@@ -20,7 +19,7 @@ public class Main {
         tm.addTask(new SubTask("sub3", "sub3", tm.getEpic(1)));
         //случай 1
         List<Task> taskList = tm.getHistory();
-        System.out.println("Длинна истории 1:"+taskList.size());
+        System.out.println("Длинна истории 1:" + taskList.size());
         System.out.println(taskList);
         //случай 2
         tm.getSubTask(3);
@@ -34,13 +33,13 @@ public class Main {
         tm.getEpic(1);
 
         taskList = tm.getHistory();
-        System.out.println("Длинна истории 5:"+taskList.size());
+        System.out.println("Длинна истории 5:" + taskList.size());
         System.out.println(taskList);
 
         //случай 3
         tm.deleteEpic(1);
         taskList = tm.getHistory();
-        System.out.println("Длинна истории 1:"+taskList.size());
+        System.out.println("Длинна истории 1:" + taskList.size());
         System.out.println(taskList);
     }
 }

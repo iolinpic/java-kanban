@@ -9,7 +9,8 @@ public class Epic extends Task {
         super(name, details);
         subTasks = new ArrayList<>();
     }
-    public Epic(Epic epic){
+
+    public Epic(Epic epic) {
         super(epic);
         subTasks = new ArrayList<>(epic.subTasks);
     }

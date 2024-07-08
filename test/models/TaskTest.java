@@ -2,7 +2,8 @@ package models;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 class TaskTest {
 
@@ -15,6 +16,6 @@ class TaskTest {
         Task task4 = new Task("task3", "task3");
         task4.setId(2);
         assertEquals(task1, task2);
-        assertNotEquals(task3,task4);
+        assertNotEquals(task3, task4);
     }
 }

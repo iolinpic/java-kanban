@@ -1,5 +1,5 @@
-import models.Task;
 import models.Node;
+import models.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,7 +33,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     private void removeNode(Node node) {
-        if(node == null){
+        if (node == null) {
             return;
         }
         if (node.getPrev() != null) {
@@ -62,7 +62,7 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void add(Task task) {
-        if(nodes.containsKey(task.getId())){
+        if (nodes.containsKey(task.getId())) {
             this.remove(task.getId());
         }
         linkLast(task);
