@@ -4,10 +4,11 @@ import models.Task;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
-    private final HashMap<Integer, Node> nodes;
+    private final Map<Integer, Node> nodes;
     private Node head;
     private Node tail;
 
@@ -36,20 +37,20 @@ public class InMemoryHistoryManager implements HistoryManager {
         if (node == null) {
             return;
         }
-        if (node.getPrev() != null) {
-            node.getPrev().setNext(node.getNext());
-        } else {
+        if (node.getPrev() == null) {
             head = node.getNext();
-        }
-        if (node.getNext() != null) {
-            node.getNext().setPrev(node.getPrev());
         } else {
+            node.getPrev().setNext(node.getNext());
+        }
+        if (node.getNext() == null) {
             tail = node.getPrev();
+        } else {
+            node.getNext().setPrev(node.getPrev());
         }
     }
 
 
-    InMemoryHistoryManager() {
+    public InMemoryHistoryManager() {
         head = null;
         tail = null;
         nodes = new HashMap<>();
