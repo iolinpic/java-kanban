@@ -20,7 +20,8 @@ public class Epic extends Task {
     }
 
     public void removeSubTask(SubTask subTask) {
-        subTasks.remove(subTask.getId());
+        subTasks.removeIf(id -> id.equals(subTask.getId()));
+//        subTasks.remove(subTask.getId());
     }
 
     public ArrayList<Integer> getSubTasks() {
