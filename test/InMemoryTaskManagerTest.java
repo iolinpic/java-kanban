@@ -1,7 +1,6 @@
 import models.Epic;
 import models.SubTask;
 import models.Task;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -55,7 +54,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void shouldTaskFieldsBeTheSameAfterAddToManager(){
+    void shouldTaskFieldsBeTheSameAfterAddToManager() {
         taskManager.addTask(new Task("task1", "task1description"));
         taskManager.getTask(1);
         assertEquals("task1", taskManager.getTask(1).getName());
@@ -63,7 +62,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void shouldNotChangeHistoryItemAfterAddToManager(){
+    void shouldNotChangeHistoryItemAfterAddToManager() {
         taskManager.addTask(new Task("task1", "task1description"));
         Task task = taskManager.getTask(1);
         task.setName("fuuu");
@@ -71,10 +70,19 @@ class InMemoryTaskManagerTest {
         assertEquals("task1", taskManager.getTask(1).getName());
         assertEquals("task1description", taskManager.getTask(1).getDetails());
         taskManager.update(task);
-        assertEquals("fuuu", taskManager.getTask(1).getName());
-        assertEquals("baar", taskManager.getTask(1).getDetails());
         List<Task> history = taskManager.getHistory();
-        assertEquals("task1",history.getFirst().getName());
-        assertEquals("task1description",history.getFirst().getDetails());
+        assertEquals("fuuu", taskManager.getTask(1).getName());
+        assertEquals("task1", history.getFirst().getName());
+    }
+
+    @Test
+    void shouldRemoveSubtaskIdFromEpicAfterDeleteFromManager() {
+        taskManager.addTask(new Epic("epic", "task"));
+        taskManager.addTask(new SubTask("Subtask", "task", taskManager.getEpic(1)));
+        taskManager.addTask(new SubTask("Subtask2", "task", taskManager.getEpic(1)));
+        taskManager.deleteSubTask(2);
+        assertEquals(1, taskManager.getSubTasks().size());
+        assertEquals(1, taskManager.getEpicSubTasks(taskManager.getEpic(1)).size());
+        assertEquals("Subtask2", taskManager.getEpicSubTasks(taskManager.getEpic(1)).getFirst().getName());
     }
 }

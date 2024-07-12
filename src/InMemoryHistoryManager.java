@@ -1,26 +1,78 @@
+import models.Node;
 import models.Task;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    private final int HISTORY_SIZE = 10;
-    private final LinkedList<Task> history;
 
-    InMemoryHistoryManager() {
-        history = new LinkedList<>();
+    private final Map<Integer, Node> nodes;
+    private Node head;
+    private Node tail;
+
+    private void linkLast(Task task) {
+        Node node = new Node(task, null, null);
+        if (tail != null) {
+            node.setPrev(tail);
+            tail.setNext(node);
+        } else {
+            head = node;
+        }
+        tail = node;
+    }
+
+    private ArrayList<Task> getTasks() {
+        Node current = head;
+        ArrayList<Task> tasks = new ArrayList<>(nodes.size());
+        while (current != null) {
+            tasks.add(current.getTask());
+            current = current.getNext();
+        }
+        return tasks;
+    }
+
+    private void removeNode(Node node) {
+        if (node == null) {
+            return;
+        }
+        if (node.getPrev() == null) {
+            head = node.getNext();
+        } else {
+            node.getPrev().setNext(node.getNext());
+        }
+        if (node.getNext() == null) {
+            tail = node.getPrev();
+        } else {
+            node.getNext().setPrev(node.getPrev());
+        }
+    }
+
+
+    public InMemoryHistoryManager() {
+        head = null;
+        tail = null;
+        nodes = new HashMap<>();
     }
 
     @Override
     public List<Task> getHistory() {
-        return history;
+        return getTasks();
     }
 
     @Override
     public void add(Task task) {
-        if (history.size() == HISTORY_SIZE) {
-            history.removeFirst();
+        if (nodes.containsKey(task.getId())) {
+            this.remove(task.getId());
         }
-        history.add(new Task(task));
+        linkLast(task);
+        nodes.put(task.getId(), tail);
+    }
+
+    @Override
+    public void remove(int id) {
+        removeNode(nodes.get(id));
+        nodes.remove(id);
     }
 }

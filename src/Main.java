@@ -1,31 +1,45 @@
 import models.Epic;
 import models.SubTask;
 import models.Task;
-import models.TaskStatus;
+
+import java.util.List;
 
 public class Main {
 
     public static void main(String[] args) {
-//        TaskManager tm = new TaskManager();
-//        tm.addTask(new Task("задача 1", "делай дело 1"));
-//        tm.addTask(new Task("задача 2", "делай дело 2"));
-//        System.out.println(tm.getTasks());
-//        tm.addEpic(new Epic("Эпик 1", "делай большое дело 1"));
-//        tm.addEpic(new Epic("Эпик 2", "делай большое дело 2"));
-//        System.out.println(tm.getEpics());
-//        tm.addSubTask(new SubTask("подзадача 1", "делай маленькое дело 1", tm.getEpic(3)));
-//        tm.addSubTask(new SubTask("подзадача 2", "делай маленькое дело 2", tm.getEpic(4)));
-//        tm.addSubTask(new SubTask("подзадача 3", "делай маленькое дело 3", tm.getEpic(4)));
-//        System.out.println(tm.getSubTasks());
-//        tm.deleteEpic(3);
-//        System.out.println(tm.getEpics());
-//        System.out.println(tm.getSubTasks());
-//        SubTask tmp = tm.getSubTask(6);
-//        tmp.setStatus(TaskStatus.DONE);
-//        tm.updateSubTask(tmp);
-//        System.out.println(tm.getEpics());
-//        System.out.println(tm.getSubTasks());
-//        System.out.println();
-//        System.out.println(tm.getEpicSubTasks(tm.getEpic(4)));
+        userCase();
+    }
+
+    public static void userCase() {
+        TaskManager tm = Managers.getDefault();
+        tm.addTask(new Epic("epic1", "epic1"));
+        tm.addTask(new Epic("epic2", "epic2"));
+        tm.addTask(new SubTask("sub1", "sub1", tm.getEpic(1)));
+        tm.addTask(new SubTask("sub2", "sub2", tm.getEpic(1)));
+        tm.addTask(new SubTask("sub3", "sub3", tm.getEpic(1)));
+        //случай 1
+        List<Task> taskList = tm.getHistory();
+        System.out.println("Длинна истории 1:" + taskList.size());
+        System.out.println(taskList);
+        //случай 2
+        tm.getSubTask(3);
+        tm.getSubTask(4);
+        tm.getSubTask(3);
+        tm.getSubTask(5);
+        tm.getSubTask(3);
+        tm.getEpic(1);
+        tm.getEpic(2);
+        tm.getEpic(2);
+        tm.getEpic(1);
+
+        taskList = tm.getHistory();
+        System.out.println("Длинна истории 5:" + taskList.size());
+        System.out.println(taskList);
+
+        //случай 3
+        tm.deleteEpic(1);
+        taskList = tm.getHistory();
+        System.out.println("Длинна истории 1:" + taskList.size());
+        System.out.println(taskList);
     }
 }

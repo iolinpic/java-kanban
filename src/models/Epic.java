@@ -9,7 +9,8 @@ public class Epic extends Task {
         super(name, details);
         subTasks = new ArrayList<>();
     }
-    public Epic(Epic epic){
+
+    public Epic(Epic epic) {
         super(epic);
         subTasks = new ArrayList<>(epic.subTasks);
     }
@@ -19,7 +20,8 @@ public class Epic extends Task {
     }
 
     public void removeSubTask(SubTask subTask) {
-        subTasks.remove(subTask.getId());
+        subTasks.removeIf(id -> id.equals(subTask.getId()));
+//        subTasks.remove(subTask.getId());
     }
 
     public ArrayList<Integer> getSubTasks() {
