@@ -2,6 +2,7 @@ package models;
 
 public class SubTask extends Task {
     private int epicId;
+    private final Tasks type = Tasks.SUBTASK;
 
     public SubTask(String name, String details, Epic epic) {
         super(name, details);
@@ -20,5 +21,10 @@ public class SubTask extends Task {
     public void setEpicId(Epic epic) {
         this.epicId = epic.getId();
 
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + epicId;
     }
 }

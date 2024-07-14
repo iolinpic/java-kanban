@@ -7,6 +7,7 @@ public class Task {
     private String name;
     private String details;
     private TaskStatus status;
+    private final Tasks type = Tasks.TASK;
 
     public Task(String name, String details) {
         this.id = 0;
@@ -73,7 +74,16 @@ public class Task {
 
     @Override
     public String toString() {
-        return getClass() + " [id=" + id + ", name=" + name + ", status=" + status + "]";
+        return id +
+                "," +
+                type +
+                "," +
+                name +
+                "," +
+                status +
+                "," +
+                details +
+                ",";
     }
 
     public void setId(int id) {
