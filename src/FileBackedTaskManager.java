@@ -1,8 +1,12 @@
+import exceptions.ManagerSaveException;
 import models.Epic;
 import models.SubTask;
 import models.Task;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class FileBackedTaskManager extends InMemoryTaskManager implements TaskManager {
     private final String filename;
@@ -13,7 +17,19 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
     }
 
     private void save() {
-        //todo добавить сохранение состояния
+        try(BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
+            for(Task task: getTasks()){
+                writer.write(task.toString()+"\n");
+            }
+            for(Epic task: getEpics()){
+                writer.write(task.toString()+"\n");
+            }
+            for(SubTask task: getSubTasks()){
+                writer.write(task.toString()+"\n");
+            }
+        } catch (IOException e) {
+            throw new ManagerSaveException();
+        }
     }
 
     public static FileBackedTaskManager loadFromFile(File file) {
