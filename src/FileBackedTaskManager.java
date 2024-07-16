@@ -24,6 +24,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
 
     private void save() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename, StandardCharsets.UTF_8))) {
+            String labels = "type,id,name,status,description,epicId";
+            writer.write(labels);
             for (Task task : getTasks()) {
                 writer.write(taskToString(task));
             }
@@ -47,6 +49,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
                 String line = reader.readLine();
                 // десериализация
                 String[] parts = line.split(",");
+                //пропускаем строчку с заголовками
+                if (parts[0].equals("type")) {
+                    continue;
+                }
                 switch (Tasks.valueOf(parts[0])) {
                     case Tasks.TASK:
                         Task task = stringToTask(parts);
