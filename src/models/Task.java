@@ -7,7 +7,7 @@ public class Task {
     private String name;
     private String details;
     private TaskStatus status;
-    private final Tasks type = Tasks.TASK;
+
 
     public Task(String name, String details) {
         this.id = 0;
@@ -30,6 +30,8 @@ public class Task {
         this.details = task.getDetails();
         this.status = task.getStatus();
     }
+
+
 
     public int getId() {
         return id;
@@ -75,8 +77,6 @@ public class Task {
     @Override
     public String toString() {
         return id +
-                "," +
-                type +
                 "," +
                 name +
                 "," +

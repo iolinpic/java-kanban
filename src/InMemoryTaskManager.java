@@ -22,6 +22,25 @@ public class InMemoryTaskManager implements TaskManager {
         this.historyManager = Managers.getDefaultHistory();
     }
 
+    InMemoryTaskManager(HashMap<Integer, Task> tasks,
+                        HashMap<Integer, SubTask> subtasks,
+                        HashMap<Integer, Epic> epics) {
+        this.tasks = tasks;
+        this.subtasks = subtasks;
+        this.epics = epics;
+        index = 1;
+        for (Integer key : tasks.keySet()) {
+            index = Math.max(index, key);
+        }
+        for (Integer key : epics.keySet()) {
+            index = Math.max(index, key);
+        }
+        for (Integer key : subtasks.keySet()) {
+            index = Math.max(index, key);
+        }
+        this.historyManager = Managers.getDefaultHistory();
+    }
+
     @Override
     public void addTask(Task task) {
         task.setId(getNextIndex());
