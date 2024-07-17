@@ -4,6 +4,7 @@ import models.*;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class FileBackedTaskManager extends InMemoryTaskManager implements TaskManager {
@@ -22,9 +23,24 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         this.filename = filename;
     }
 
+    public static void main(String[] args) {
+        FileBackedTaskManager tm = new FileBackedTaskManager("tasks.csv");
+        tm.addTask(new Epic("epic1", "epic1"));
+        tm.addTask(new Epic("epic2", "epic2"));
+        tm.addTask(new SubTask("sub1", "sub1", tm.getEpic(1)));
+        tm.addTask(new SubTask("sub2", "sub2", tm.getEpic(1)));
+        tm.addTask(new SubTask("sub3", "sub3", tm.getEpic(1)));
+        tm.addTask(new Task("task", "detail"));
+        tm.addTask(new Task("task2", "detail2"));
+        FileBackedTaskManager tm2 = FileBackedTaskManager.loadFromFile(new File("tasks.csv"));
+        System.out.println("Список задач идентичен: " + Arrays.equals(tm.getTasks().toArray(), tm2.getTasks().toArray()));
+        System.out.println("Список эпиков идентичен: " + Arrays.equals(tm.getEpics().toArray(), tm2.getEpics().toArray()));
+        System.out.println("Список подзадач идентичен: " + Arrays.equals(tm.getSubTasks().toArray(), tm2.getSubTasks().toArray()));
+    }
+
     private void save() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename, StandardCharsets.UTF_8))) {
-            String labels = "type,id,name,status,description,epicId";
+            String labels = "type,id,name,status,description,epicId\n";
             writer.write(labels);
             for (Task task : getTasks()) {
                 writer.write(taskToString(task));
@@ -73,7 +89,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         }
         // восстанавливаем список сабтасок в эпиках
         for (SubTask subTask : subTasks.values()) {
-            if (epics.containsKey(subTask.getId())) {
+            if (epics.containsKey(subTask.getEpicId())) {
                 epics.get(subTask.getEpicId()).addSubTask(subTask);
             }
         }
