@@ -5,7 +5,6 @@ import models.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.HashMap;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private final String filename;
@@ -83,6 +82,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 tm.epics.get(subTask.getEpicId()).addSubTask(subTask);
             }
         }
+        // выставляем следующий индекс
+        tm.updateIndexCounter();
         return tm;
     }
 

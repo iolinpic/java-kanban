@@ -15,7 +15,7 @@ public class InMemoryTaskManager implements TaskManager {
     final HashMap<Integer, Epic> epics;
     private final HistoryManager historyManager;
 
-    private int index;
+    int index;
 
     InMemoryTaskManager() {
         index = 1;
@@ -25,12 +25,7 @@ public class InMemoryTaskManager implements TaskManager {
         this.historyManager = Managers.getDefaultHistory();
     }
 
-    InMemoryTaskManager(HashMap<Integer, Task> tasks,
-                        HashMap<Integer, SubTask> subtasks,
-                        HashMap<Integer, Epic> epics) {
-        this.tasks = tasks;
-        this.subtasks = subtasks;
-        this.epics = epics;
+    void updateIndexCounter() {
         index = 1;
         for (Integer key : tasks.keySet()) {
             index = Math.max(index, key);
@@ -41,7 +36,6 @@ public class InMemoryTaskManager implements TaskManager {
         for (Integer key : subtasks.keySet()) {
             index = Math.max(index, key);
         }
-        this.historyManager = Managers.getDefaultHistory();
     }
 
     @Override
