@@ -36,7 +36,7 @@ class InMemoryTaskManagerTest {
     @Test
     void shouldAddSubtaskAndFindItById() {
         taskManager.addTask(new Epic("epic", "task"));
-        taskManager.addTask(new SubTask("Subtask", "task", taskManager.getEpic(1)));
+        taskManager.addTask(new SubTask("Subtask", "task", 1));
         assertEquals(1, taskManager.getEpics().size());
         assertEquals(1, taskManager.getSubTasks().size());
         assertEquals(0, taskManager.getTasks().size());
@@ -78,8 +78,8 @@ class InMemoryTaskManagerTest {
     @Test
     void shouldRemoveSubtaskIdFromEpicAfterDeleteFromManager() {
         taskManager.addTask(new Epic("epic", "task"));
-        taskManager.addTask(new SubTask("Subtask", "task", taskManager.getEpic(1)));
-        taskManager.addTask(new SubTask("Subtask2", "task", taskManager.getEpic(1)));
+        taskManager.addTask(new SubTask("Subtask", "task", 1));
+        taskManager.addTask(new SubTask("Subtask2", "task", 1));
         taskManager.deleteSubTask(2);
         assertEquals(1, taskManager.getSubTasks().size());
         assertEquals(1, taskManager.getEpicSubTasks(taskManager.getEpic(1)).size());

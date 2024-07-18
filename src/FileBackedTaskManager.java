@@ -27,9 +27,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         FileBackedTaskManager tm = new FileBackedTaskManager("tasks.csv");
         tm.addTask(new Epic("epic1", "epic1"));
         tm.addTask(new Epic("epic2", "epic2"));
-        tm.addTask(new SubTask("sub1", "sub1", tm.getEpic(1)));
-        tm.addTask(new SubTask("sub2", "sub2", tm.getEpic(1)));
-        tm.addTask(new SubTask("sub3", "sub3", tm.getEpic(1)));
+        tm.addTask(new SubTask("sub1", "sub1", 1));
+        tm.addTask(new SubTask("sub2", "sub2",1));
+        tm.addTask(new SubTask("sub3", "sub3", 1));
         tm.addTask(new Task("task", "detail"));
         tm.addTask(new Task("task2", "detail2"));
         FileBackedTaskManager tm2 = FileBackedTaskManager.loadFromFile(new File("tasks.csv"));
