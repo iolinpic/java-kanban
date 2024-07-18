@@ -176,7 +176,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (subtasks.containsKey(subtask.getId())) {
             Epic epic = epics.get(subtask.getEpicId());
             SubTask oldSubtask = subtasks.get(subtask.getId());
-            if (!oldSubtask.getEpicId().equals(subtask.getEpicId())) {
+            if (oldSubtask.getEpicId() != subtask.getEpicId()) {
                 //если в старом сабтаске был другой епик
                 Epic oldEpic = epics.get(oldSubtask.getEpicId());
                 oldEpic.removeSubTask(oldSubtask);
@@ -249,10 +249,8 @@ public class InMemoryTaskManager implements TaskManager {
      * Функция для вызова перед удалением сабтаска (удаляет связь с эпиком)
      */
     private void onBeforeSubtaskDelete(SubTask sub) {
-        if (sub.getEpicId() != null) {
-            epics.get(sub.getEpicId()).removeSubTask(sub);
-            updateEpicStatus(epics.get(sub.getEpicId()));
-        }
+        epics.get(sub.getEpicId()).removeSubTask(sub);
+        updateEpicStatus(epics.get(sub.getEpicId()));
     }
 
     /**

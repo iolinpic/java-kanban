@@ -19,7 +19,7 @@ public class SubTask extends Task {
     }
 
 
-    public Integer getEpicId() {
+    public int getEpicId() {
         return epicId;
     }
 
