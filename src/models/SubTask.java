@@ -23,10 +23,6 @@ public class SubTask extends Task {
         return epicId;
     }
 
-    public void setEpicId(Epic epic) {
-        this.epicId = epic.getId();
-
-    }
 
     @Override
     public String toString() {
