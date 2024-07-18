@@ -15,20 +15,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         this.filename = filename;
     }
 
-    public FileBackedTaskManager(String filename,
-                                 HashMap<Integer, Task> tasks,
-                                 HashMap<Integer, SubTask> subtasks,
-                                 HashMap<Integer, Epic> epics) {
-        super(tasks, subtasks, epics);
-        this.filename = filename;
-    }
-
     public static void main(String[] args) {
         FileBackedTaskManager tm = new FileBackedTaskManager("tasks.csv");
         tm.addTask(new Epic("epic1", "epic1"));
         tm.addTask(new Epic("epic2", "epic2"));
         tm.addTask(new SubTask("sub1", "sub1", 1));
-        tm.addTask(new SubTask("sub2", "sub2",1));
+        tm.addTask(new SubTask("sub2", "sub2", 1));
         tm.addTask(new SubTask("sub3", "sub3", 1));
         tm.addTask(new Task("task", "detail"));
         tm.addTask(new Task("task2", "detail2"));
@@ -57,9 +49,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     public static FileBackedTaskManager loadFromFile(File file) {
-        HashMap<Integer, Task> tasks = new HashMap<>();
-        HashMap<Integer, Epic> epics = new HashMap<>();
-        HashMap<Integer, SubTask> subTasks = new HashMap<>();
+        FileBackedTaskManager tm = new FileBackedTaskManager(file.getName());
         try (BufferedReader reader = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8))) {
             while (reader.ready()) {
                 String line = reader.readLine();
@@ -72,15 +62,15 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 switch (TaskType.valueOf(parts[0])) {
                     case TaskType.TASK:
                         Task task = stringToTask(parts);
-                        tasks.put(task.getId(), task);
+                        tm.tasks.put(task.getId(), task);
                         break;
                     case TaskType.EPIC:
                         Epic epic = stringToEpic(parts);
-                        epics.put(epic.getId(), epic);
+                        tm.epics.put(epic.getId(), epic);
                         break;
                     case TaskType.SUBTASK:
                         SubTask subTask = stringToSubTask(parts);
-                        subTasks.put(subTask.getId(), subTask);
+                        tm.subtasks.put(subTask.getId(), subTask);
                         break;
                 }
             }
@@ -88,12 +78,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             throw new ManagerLoadException(e);
         }
         // восстанавливаем список сабтасок в эпиках
-        for (SubTask subTask : subTasks.values()) {
-            if (epics.containsKey(subTask.getEpicId())) {
-                epics.get(subTask.getEpicId()).addSubTask(subTask);
+        for (SubTask subTask : tm.subtasks.values()) {
+            if (tm.epics.containsKey(subTask.getEpicId())) {
+                tm.epics.get(subTask.getEpicId()).addSubTask(subTask);
             }
         }
-        return new FileBackedTaskManager(file.getName(), tasks, subTasks, epics);
+        return tm;
     }
 
     private static String taskToString(Task task) {
