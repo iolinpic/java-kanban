@@ -109,23 +109,20 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     private static Task stringToTask(String[] parts) {
-        Task newTask = new Task(parts[2], parts[4]);
+        Task newTask = new Task(parts[2], parts[4], TaskStatus.valueOf(parts[3]));
         newTask.setId(Integer.parseInt(parts[1]));
-        newTask.setStatus(TaskStatus.valueOf(parts[3]));
         return newTask;
     }
 
     private static Epic stringToEpic(String[] parts) {
-        Epic newEpic = new Epic(parts[2], parts[4]);
+        Epic newEpic = new Epic(parts[2], parts[4], TaskStatus.valueOf(parts[3]));
         newEpic.setId(Integer.parseInt(parts[1]));
-        newEpic.setStatus(TaskStatus.valueOf(parts[3]));
         return newEpic;
     }
 
     private static SubTask stringToSubTask(String[] parts) {
-        SubTask newSubtask = new SubTask(parts[2], parts[4], Integer.parseInt(parts[5]));
+        SubTask newSubtask = new SubTask(parts[2], parts[4], TaskStatus.valueOf(parts[3]), Integer.parseInt(parts[5]));
         newSubtask.setId(Integer.parseInt(parts[1]));
-        newSubtask.setStatus(TaskStatus.valueOf(parts[3]));
         return newSubtask;
     }
 
