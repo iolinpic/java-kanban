@@ -69,16 +69,16 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 if (parts[0].equals("type")) {
                     continue;
                 }
-                switch (Tasks.valueOf(parts[0])) {
-                    case Tasks.TASK:
+                switch (TaskType.valueOf(parts[0])) {
+                    case TaskType.TASK:
                         Task task = stringToTask(parts);
                         tasks.put(task.getId(), task);
                         break;
-                    case Tasks.EPIC:
+                    case TaskType.EPIC:
                         Epic epic = stringToEpic(parts);
                         epics.put(epic.getId(), epic);
                         break;
-                    case Tasks.SUBTASK:
+                    case TaskType.SUBTASK:
                         SubTask subTask = stringToSubTask(parts);
                         subTasks.put(subTask.getId(), subTask);
                         break;
@@ -97,15 +97,15 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     private static String taskToString(Task task) {
-        return Tasks.TASK + "," + task.toString() + "\n";
+        return TaskType.TASK + "," + task.toString() + "\n";
     }
 
     private static String epicToString(Epic epic) {
-        return Tasks.EPIC + "," + epic.toString() + "\n";
+        return TaskType.EPIC + "," + epic.toString() + "\n";
     }
 
     private static String subTaskToString(SubTask subTask) {
-        return Tasks.SUBTASK + "," + subTask.toString() + "\n";
+        return TaskType.SUBTASK + "," + subTask.toString() + "\n";
     }
 
     private static Task stringToTask(String[] parts) {
