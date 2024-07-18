@@ -1,7 +1,7 @@
 package exceptions;
 
 public class ManagerLoadException extends RuntimeException {
-    public ManagerLoadException() {
-        super();
+    public ManagerLoadException(Exception e) {
+        super(e);
     }
 }

@@ -52,7 +52,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 writer.write(subTaskToString(subTask));
             }
         } catch (IOException e) {
-            throw new ManagerSaveException();
+            throw new ManagerSaveException(e);
         }
     }
 
@@ -85,7 +85,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 }
             }
         } catch (IOException e) {
-            throw new ManagerLoadException();
+            throw new ManagerLoadException(e);
         }
         // восстанавливаем список сабтасок в эпиках
         for (SubTask subTask : subTasks.values()) {
