@@ -10,6 +10,11 @@ public class Epic extends Task {
         subTasks = new ArrayList<>();
     }
 
+    public Epic(String name, String details, TaskStatus status) {
+        super(name, details, status);
+        subTasks = new ArrayList<>();
+    }
+
     public Epic(Epic epic) {
         super(epic);
         subTasks = new ArrayList<>(epic.subTasks);
@@ -27,4 +32,6 @@ public class Epic extends Task {
     public ArrayList<Integer> getSubTasks() {
         return subTasks;
     }
+
+
 }

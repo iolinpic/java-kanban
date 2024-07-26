@@ -3,16 +3,19 @@ import models.SubTask;
 import models.Task;
 import models.TaskStatus;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
 
-    private final HashMap<Integer, Task> tasks;
-    private final HashMap<Integer, SubTask> subtasks;
-    private final HashMap<Integer, Epic> epics;
+    protected final HashMap<Integer, Task> tasks;
+    protected final HashMap<Integer, SubTask> subtasks;
+    protected final HashMap<Integer, Epic> epics;
     private final HistoryManager historyManager;
 
-    private int index;
+    int index;
 
     InMemoryTaskManager() {
         index = 1;
@@ -20,6 +23,19 @@ public class InMemoryTaskManager implements TaskManager {
         subtasks = new HashMap<>();
         epics = new HashMap<>();
         this.historyManager = Managers.getDefaultHistory();
+    }
+
+    void updateIndexCounter() {
+        index = 1;
+        for (Integer key : tasks.keySet()) {
+            index = Math.max(index, key);
+        }
+        for (Integer key : epics.keySet()) {
+            index = Math.max(index, key);
+        }
+        for (Integer key : subtasks.keySet()) {
+            index = Math.max(index, key);
+        }
     }
 
     @Override
@@ -154,7 +170,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (subtasks.containsKey(subtask.getId())) {
             Epic epic = epics.get(subtask.getEpicId());
             SubTask oldSubtask = subtasks.get(subtask.getId());
-            if (!oldSubtask.getEpicId().equals(subtask.getEpicId())) {
+            if (oldSubtask.getEpicId() != subtask.getEpicId()) {
                 //если в старом сабтаске был другой епик
                 Epic oldEpic = epics.get(oldSubtask.getEpicId());
                 oldEpic.removeSubTask(oldSubtask);
@@ -227,10 +243,8 @@ public class InMemoryTaskManager implements TaskManager {
      * Функция для вызова перед удалением сабтаска (удаляет связь с эпиком)
      */
     private void onBeforeSubtaskDelete(SubTask sub) {
-        if (sub.getEpicId() != null) {
-            epics.get(sub.getEpicId()).removeSubTask(sub);
-            updateEpicStatus(epics.get(sub.getEpicId()));
-        }
+        epics.get(sub.getEpicId()).removeSubTask(sub);
+        updateEpicStatus(epics.get(sub.getEpicId()));
     }
 
     /**

@@ -1,11 +1,16 @@
 package models;
 
 public class SubTask extends Task {
-    private int epicId;
+    private final int epicId;
 
-    public SubTask(String name, String details, Epic epic) {
+    public SubTask(String name, String details, int epicId) {
         super(name, details);
-        this.epicId = epic.getId();
+        this.epicId = epicId;
+    }
+
+    public SubTask(String name, String details, TaskStatus status, int epicId) {
+        super(name, details, status);
+        this.epicId = epicId;
     }
 
     public SubTask(SubTask subTask) {
@@ -13,12 +18,14 @@ public class SubTask extends Task {
         this.epicId = subTask.getEpicId();
     }
 
-    public Integer getEpicId() {
+
+    public int getEpicId() {
         return epicId;
     }
 
-    public void setEpicId(Epic epic) {
-        this.epicId = epic.getId();
 
+    @Override
+    public String toString() {
+        return super.toString() + epicId;
     }
 }

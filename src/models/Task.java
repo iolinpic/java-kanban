@@ -8,11 +8,19 @@ public class Task {
     private String details;
     private TaskStatus status;
 
+
     public Task(String name, String details) {
         this.id = 0;
         this.name = name;
         this.details = details;
         this.status = TaskStatus.NEW;
+    }
+
+    public Task(String name, String details, TaskStatus status) {
+        this.id = 0;
+        this.name = name;
+        this.details = details;
+        this.status = status;
     }
 
     //конструктор для упрощения тестирования
@@ -29,6 +37,7 @@ public class Task {
         this.details = task.getDetails();
         this.status = task.getStatus();
     }
+
 
     public int getId() {
         return id;
@@ -73,7 +82,14 @@ public class Task {
 
     @Override
     public String toString() {
-        return getClass() + " [id=" + id + ", name=" + name + ", status=" + status + "]";
+        return id +
+                "," +
+                name +
+                "," +
+                status +
+                "," +
+                details +
+                ",";
     }
 
     public void setId(int id) {
