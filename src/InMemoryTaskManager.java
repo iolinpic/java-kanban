@@ -3,6 +3,7 @@ import models.SubTask;
 import models.Task;
 import models.TaskStatus;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -59,7 +60,7 @@ public class InMemoryTaskManager implements TaskManager {
         subTask.setId(getNextIndex());
         subtasks.put(subTask.getId(), subTask);
         epic.addSubTask(subTask);
-        updateEpicStatus(epic);
+        updateEpic(epic);
     }
 
 
@@ -174,11 +175,11 @@ public class InMemoryTaskManager implements TaskManager {
                 //если в старом сабтаске был другой епик
                 Epic oldEpic = epics.get(oldSubtask.getEpicId());
                 oldEpic.removeSubTask(oldSubtask);
-                updateEpicStatus(oldEpic);
+                updateEpic(oldEpic);
                 epic.addSubTask(subtask);
             }
             subtasks.put(subtask.getId(), subtask);
-            updateEpicStatus(epic);
+            updateEpic(epic);
         }
     }
 
@@ -204,7 +205,7 @@ public class InMemoryTaskManager implements TaskManager {
                 // а изменение связи эпик сабтаск производим через обновление сабтаска),
             }
             epics.put(epic.getId(), epic);
-            updateEpicStatus(epic);
+            updateEpic(epic);
         }
     }
 
@@ -244,7 +245,7 @@ public class InMemoryTaskManager implements TaskManager {
      */
     private void onBeforeSubtaskDelete(SubTask sub) {
         epics.get(sub.getEpicId()).removeSubTask(sub);
-        updateEpicStatus(epics.get(sub.getEpicId()));
+        updateEpic(epics.get(sub.getEpicId()));
     }
 
     /**
@@ -261,6 +262,31 @@ public class InMemoryTaskManager implements TaskManager {
             return;
         }
         epic.setStatus(TaskStatus.IN_PROGRESS);
+    }
+
+    /**
+     * Объединяем параметры которые нужно обновлять в эпике при добавлении\изменении сабтасков
+     *
+     * @param epic
+     */
+    private void updateEpic(Epic epic) {
+        updateEpicStatus(epic);
+        updateEpicDates(epic);
+    }
+
+    /**
+     * Выполняем расчет startTime - как минимальную дату начала, duration как сумму продолжительностей
+     * и endTime как самую позднюю из дат окончания из всех сабтасков
+     *
+     * @param epic
+     */
+    protected void updateEpicDates(Epic epic) {
+        List<SubTask> subTasks = getEpicSubTasks(epic);
+        subTasks.stream()
+                .peek((subTask -> epic.setDuration(epic.getDuration().plus(subTask.getDuration()))))
+                .min(Epic::compareByStartTime)
+                .ifPresent((subTask -> epic.setStartTime(subTask.getStartTime())));
+        subTasks.stream().max(Epic::compareByEndTime).ifPresent((subTask -> epic.setEndTime(subTask.getStartTime())));
     }
 
     /**

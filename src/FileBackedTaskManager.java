@@ -4,6 +4,8 @@ import models.*;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
@@ -31,7 +33,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private void save() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename, StandardCharsets.UTF_8))) {
-            String labels = "type,id,name,status,description,epicId\n";
+            String labels = "type,id,name,status,description,duration,start,epicId\n";
             writer.write(labels);
             for (Task task : getTasks()) {
                 writer.write(taskToString(task));
@@ -89,6 +91,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 tm.epics.get(subTask.getEpicId()).addSubTask(subTask);
             }
         }
+        // пересчитываем endTime для epics
+        for (Epic epic : tm.epics.values()) {
+            tm.updateEpicDates(epic);
+        }
+
         // выставляем следующий индекс
         tm.updateIndexCounter();
         return tm;
@@ -107,19 +114,26 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     private static Task stringToTask(String[] parts) {
-        Task newTask = new Task(parts[2], parts[4], TaskStatus.valueOf(parts[3]));
+        Task newTask = new Task(parts[2], parts[4], TaskStatus.valueOf(parts[3]),
+                Duration.ofMinutes(Long.parseLong(parts[5])),
+                LocalDateTime.parse(parts[6], Task.SERIALISATION_FORMATTER));
         newTask.setId(Integer.parseInt(parts[1]));
         return newTask;
     }
 
     private static Epic stringToEpic(String[] parts) {
-        Epic newEpic = new Epic(parts[2], parts[4], TaskStatus.valueOf(parts[3]));
+        Epic newEpic = new Epic(parts[2], parts[4], TaskStatus.valueOf(parts[3]),
+                Duration.ofMinutes(Long.parseLong(parts[5])),
+                LocalDateTime.parse(parts[6], Task.SERIALISATION_FORMATTER));
         newEpic.setId(Integer.parseInt(parts[1]));
         return newEpic;
     }
 
     private static SubTask stringToSubTask(String[] parts) {
-        SubTask newSubtask = new SubTask(parts[2], parts[4], TaskStatus.valueOf(parts[3]), Integer.parseInt(parts[5]));
+        SubTask newSubtask = new SubTask(parts[2], parts[4], TaskStatus.valueOf(parts[3]),
+                Duration.ofMinutes(Long.parseLong(parts[5])),
+                LocalDateTime.parse(parts[6], Task.SERIALISATION_FORMATTER),
+                Integer.parseInt(parts[7]));
         newSubtask.setId(Integer.parseInt(parts[1]));
         return newSubtask;
     }
