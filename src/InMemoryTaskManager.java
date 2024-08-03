@@ -48,9 +48,6 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void addTask(Epic epic) {
-        if (isTaskInvalid(epic, null)) {
-            return;
-        }
         epic.setId(getNextIndex());
         epics.put(epic.getId(), epic);
         addToPrioritizedTaskList(epic, false);
@@ -210,9 +207,6 @@ public class InMemoryTaskManager implements TaskManager {
     public void update(Epic epic) {
         if (epics.containsKey(epic.getId())) {
             Epic oldEpic = epics.get(epic.getId());
-            if (isTaskInvalid(epic, oldEpic)) {
-                return;
-            }
             // удаляем те индексы что не относятся к сабтаскам
             epic.getSubTasks().removeIf(newId -> !subtasks.containsKey(newId));
 

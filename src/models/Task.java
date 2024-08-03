@@ -160,7 +160,7 @@ public class Task implements Comparable<Task> {
     }
 
     public static boolean isTasksTimelineIntersect(Task task1, Task task2) {
-        if (task1 == null || task2 == null || task1.getStartTime() == null || task2.getStartTime() == null) {
+        if (task1 == null || task2 == null || task1.getStartTime() == null || task2.getStartTime() == null || task1.getEndTime() == null) {
             return false;
         }
         if (task1.getStartTime().isEqual(task2.getStartTime())) {
