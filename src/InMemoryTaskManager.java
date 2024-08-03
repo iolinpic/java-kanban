@@ -3,7 +3,6 @@ import models.SubTask;
 import models.Task;
 import models.TaskStatus;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
@@ -39,6 +38,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void addTask(Task task) {
+        if (isTaskInvalid(task, null)) {
+            return;
+        }
         task.setId(getNextIndex());
         tasks.put(task.getId(), task);
         addToPrioritizedTaskList(task, false);
@@ -46,6 +48,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void addTask(Epic epic) {
+        if (isTaskInvalid(epic, null)) {
+            return;
+        }
         epic.setId(getNextIndex());
         epics.put(epic.getId(), epic);
         addToPrioritizedTaskList(epic, false);
@@ -53,6 +58,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void addTask(SubTask subTask) {
+        if (isTaskInvalid(subTask, null)) {
+            return;
+        }
         Epic epic = epics.get(subTask.getEpicId());
         if (epic == null) {
             return;
@@ -169,6 +177,9 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void update(Task task) {
         if (tasks.containsKey(task.getId())) {
+            if (isTaskInvalid(task, tasks.get(task.getId()))) {
+                return;
+            }
             tasks.put(task.getId(), task);
             addToPrioritizedTaskList(task, true);
         }
@@ -179,6 +190,9 @@ public class InMemoryTaskManager implements TaskManager {
         if (subtasks.containsKey(subtask.getId())) {
             Epic epic = epics.get(subtask.getEpicId());
             SubTask oldSubtask = subtasks.get(subtask.getId());
+            if (isTaskInvalid(subtask, oldSubtask)) {
+                return;
+            }
             if (oldSubtask.getEpicId() != subtask.getEpicId()) {
                 //если в старом сабтаске был другой епик
                 Epic oldEpic = epics.get(oldSubtask.getEpicId());
@@ -196,6 +210,9 @@ public class InMemoryTaskManager implements TaskManager {
     public void update(Epic epic) {
         if (epics.containsKey(epic.getId())) {
             Epic oldEpic = epics.get(epic.getId());
+            if (isTaskInvalid(epic, oldEpic)) {
+                return;
+            }
             // удаляем те индексы что не относятся к сабтаскам
             for (Integer newId : epic.getSubTasks()) {
                 if (!subtasks.containsKey(newId)) {
@@ -337,4 +354,17 @@ public class InMemoryTaskManager implements TaskManager {
         }
         prioritizedTasks.add(task);
     }
+
+    /**
+     * Проверяем что добавляемая задача не пересекается по временному интервалу с существующими
+     *
+     * @param task
+     * @param updatedTask
+     * @return
+     */
+    private boolean isTaskInvalid(Task task, Task updatedTask) {
+        return getPrioritizedTasks().stream().filter(t -> !t.equals(updatedTask)).anyMatch(t -> Task.isTasksTimelineIntersect(t, task));
+    }
+
+
 }
