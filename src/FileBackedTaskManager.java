@@ -53,12 +53,15 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public static FileBackedTaskManager loadFromFile(File file) {
         //на случай если указанного файла не существует
         try {
-            file.createNewFile();
+            if(file.createNewFile()){
+                //если файл пустой то сразу отдаем дефолтный конструктор
+                return new FileBackedTaskManager(file.getAbsolutePath());
+            }
         } catch (IOException e) {
             throw new ManagerLoadException(e);
         }
 
-        FileBackedTaskManager tm = new FileBackedTaskManager(file.getName());
+        FileBackedTaskManager tm = new FileBackedTaskManager(file.getAbsolutePath());
         try (BufferedReader reader = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8))) {
             while (reader.ready()) {
                 String line = reader.readLine();

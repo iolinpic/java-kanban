@@ -150,6 +150,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteTask(int index) {
+        if (!tasks.containsKey(index)) {
+            return;
+        }
         historyManager.remove(index);
         prioritizedTasks.remove(tasks.get(index));
         tasks.remove(index);
@@ -157,6 +160,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteSubTask(int index) {
+        if (!subtasks.containsKey(index)) {
+            return;
+        }
         onBeforeSubtaskDelete(subtasks.get(index));
         historyManager.remove(index);
         prioritizedTasks.remove(subtasks.get(index));
@@ -165,6 +171,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteEpic(int index) {
+        if (!epics.containsKey(index)) {
+            return;
+        }
         onBeforeEpicDelete(epics.get(index));
         historyManager.remove(index);
         prioritizedTasks.remove(epics.get(index));
@@ -280,7 +289,6 @@ public class InMemoryTaskManager implements TaskManager {
 
     /**
      * Объединяем параметры которые нужно обновлять в эпике при добавлении\изменении сабтасков
-     *
      */
     private void updateEpic(Epic epic) {
         updateEpicStatus(epic);
@@ -290,7 +298,6 @@ public class InMemoryTaskManager implements TaskManager {
     /**
      * Выполняем расчет startTime - как минимальную дату начала, duration как сумму продолжительностей
      * и endTime как самую позднюю из дат окончания из всех сабтасков
-     *
      */
     protected void updateEpicDates(Epic epic) {
         List<SubTask> subTasks = getEpicSubTasks(epic);
@@ -330,7 +337,6 @@ public class InMemoryTaskManager implements TaskManager {
     /**
      * Перед добавлением в treeSet проверяем что startTime задан,
      * также учитываем что при обновлении нужно удалить элемент и потом добавить
-     *
      */
     private void addToPrioritizedTaskList(Task task, boolean update) {
         if (task.getStartTime() == null) {
@@ -344,7 +350,6 @@ public class InMemoryTaskManager implements TaskManager {
 
     /**
      * Проверяем что добавляемая задача не пересекается по временному интервалу с существующими
-     *
      */
     private boolean isTaskInvalid(Task task, Task updatedTask) {
 //        return false;
