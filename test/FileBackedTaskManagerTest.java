@@ -1,6 +1,7 @@
 import models.Epic;
 import models.SubTask;
 import models.Task;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
@@ -10,7 +11,21 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class FileBackedTaskManagerTest {
+class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
+
+    @Override
+    void init() {
+        try {
+            taskManager = new FileBackedTaskManager(File.createTempFile("logic", ".csv").getAbsolutePath());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @BeforeEach
+    void setUp() {
+        init();
+    }
 
     private void addTasks(FileBackedTaskManager tm) {
         tm.addTask(new Epic("epic1", "epic1"));

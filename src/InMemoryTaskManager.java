@@ -363,6 +363,7 @@ public class InMemoryTaskManager implements TaskManager {
      * @return
      */
     private boolean isTaskInvalid(Task task, Task updatedTask) {
+//        return false;
         return getPrioritizedTasks().stream().filter(t -> !t.equals(updatedTask)).anyMatch(t -> Task.isTasksTimelineIntersect(t, task));
     }
 
