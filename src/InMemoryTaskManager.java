@@ -214,11 +214,8 @@ public class InMemoryTaskManager implements TaskManager {
                 return;
             }
             // удаляем те индексы что не относятся к сабтаскам
-            for (Integer newId : epic.getSubTasks()) {
-                if (!subtasks.containsKey(newId)) {
-                    epic.getSubTasks().remove(newId);
-                }
-            }
+            epic.getSubTasks().removeIf(newId -> !subtasks.containsKey(newId));
+
             if (!Arrays.equals(epic.getSubTasks().toArray(), oldEpic.getSubTasks().toArray())) {
                 //удаляем те сабтаски что были в старом но отсутствуют в новом
                 for (Integer oldId : oldEpic.getSubTasks()) {
@@ -290,7 +287,6 @@ public class InMemoryTaskManager implements TaskManager {
     /**
      * Объединяем параметры которые нужно обновлять в эпике при добавлении\изменении сабтасков
      *
-     * @param epic
      */
     private void updateEpic(Epic epic) {
         updateEpicStatus(epic);
@@ -301,7 +297,6 @@ public class InMemoryTaskManager implements TaskManager {
      * Выполняем расчет startTime - как минимальную дату начала, duration как сумму продолжительностей
      * и endTime как самую позднюю из дат окончания из всех сабтасков
      *
-     * @param epic
      */
     protected void updateEpicDates(Epic epic) {
         List<SubTask> subTasks = getEpicSubTasks(epic);
@@ -342,8 +337,6 @@ public class InMemoryTaskManager implements TaskManager {
      * Перед добавлением в treeSet проверяем что startTime задан,
      * также учитываем что при обновлении нужно удалить элемент и потом добавить
      *
-     * @param task
-     * @param update
      */
     private void addToPrioritizedTaskList(Task task, boolean update) {
         if (task.getStartTime() == null) {
@@ -358,9 +351,6 @@ public class InMemoryTaskManager implements TaskManager {
     /**
      * Проверяем что добавляемая задача не пересекается по временному интервалу с существующими
      *
-     * @param task
-     * @param updatedTask
-     * @return
      */
     private boolean isTaskInvalid(Task task, Task updatedTask) {
 //        return false;

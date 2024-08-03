@@ -18,9 +18,4 @@ class SubTaskTest {
         assertEquals(subTask, subTask2);
         assertNotEquals(subTask3, subTask4);
     }
-
-    @Test
-    void shouldNotBeAbleToAddSubtaskAsEpic() {
-        //чисто по сигнатуре метода Subtask(String name,String description,Epic epic) мы не сможем добавить
-    }
 }

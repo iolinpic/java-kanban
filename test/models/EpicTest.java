@@ -19,11 +19,4 @@ class EpicTest {
         assertNotEquals(task3, task4);
     }
 
-    @Test
-    void shouldNotBeAbleToAddEpicAsSubtask() {
-//        Epic task1 = new Epic("task1", "task1");
-//        Epic subtask1 = new Epic("sub1", "sub");
-        //чисто по сигнатуре метода addSubtask(Subtask sub) мы не сможем добавить,
-        //task1.addSubTask(subtask1);
-    }
 }
