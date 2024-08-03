@@ -85,4 +85,6 @@ class InMemoryTaskManagerTest {
         assertEquals(1, taskManager.getEpicSubTasks(taskManager.getEpic(1)).size());
         assertEquals("Subtask2", taskManager.getEpicSubTasks(taskManager.getEpic(1)).getFirst().getName());
     }
+
+    //todo  добавить тест на приоритетный список
 }

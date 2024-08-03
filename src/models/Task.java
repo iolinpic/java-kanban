@@ -63,6 +63,9 @@ public class Task implements Comparable<Task> {
     }
 
     public LocalDateTime getEndTime() {
+        if (startTime == null) {
+            return null;
+        }
         return startTime.plus(duration);
     }
 
@@ -109,6 +112,10 @@ public class Task implements Comparable<Task> {
 
     @Override
     public String toString() {
+        String startTimeStr = "null";
+        if (startTime != null) {
+            startTimeStr = startTime.format(SERIALISATION_FORMATTER);
+        }
         return id +
                 "," +
                 name +
@@ -119,7 +126,7 @@ public class Task implements Comparable<Task> {
                 "," +
                 duration.toMinutes() +
                 "," +
-                startTime.format(SERIALISATION_FORMATTER) +
+                startTimeStr +
                 ",";
 
     }

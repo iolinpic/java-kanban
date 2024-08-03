@@ -25,6 +25,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         tm.addTask(new SubTask("sub3", "sub3", 1));
         tm.addTask(new Task("task", "detail"));
         tm.addTask(new Task("task2", "detail2"));
+        tm.addTask(new Task("task2", "detail2"));
         FileBackedTaskManager tm2 = FileBackedTaskManager.loadFromFile(new File("tasks.csv"));
         System.out.println("Список задач идентичен: " + Arrays.equals(tm.getTasks().toArray(), tm2.getTasks().toArray()));
         System.out.println("Список эпиков идентичен: " + Arrays.equals(tm.getEpics().toArray(), tm2.getEpics().toArray()));
@@ -96,9 +97,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             tm.updateEpicDates(epic);
         }
         //восстанавливаем prioritized в TreeSet
-        tm.prioritizedTasks.addAll(tm.tasks.values());
-        tm.prioritizedTasks.addAll(tm.epics.values());
-        tm.prioritizedTasks.addAll(tm.subtasks.values());
+        tm.prioritizedTasks.addAll(tm.tasks.values().stream().filter(task -> task.getStartTime() != null).toList());
+        tm.prioritizedTasks.addAll(tm.epics.values().stream().filter(task -> task.getStartTime() != null).toList());
+        tm.prioritizedTasks.addAll(tm.subtasks.values().stream().filter(task -> task.getStartTime() != null).toList());
 
         // выставляем следующий индекс
         tm.updateIndexCounter();
@@ -120,7 +121,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     private static Task stringToTask(String[] parts) {
         Task newTask = new Task(parts[2], parts[4], TaskStatus.valueOf(parts[3]),
                 Duration.ofMinutes(Long.parseLong(parts[5])),
-                LocalDateTime.parse(parts[6], Task.SERIALISATION_FORMATTER));
+                parseDate(parts[6]));
         newTask.setId(Integer.parseInt(parts[1]));
         return newTask;
     }
@@ -128,7 +129,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     private static Epic stringToEpic(String[] parts) {
         Epic newEpic = new Epic(parts[2], parts[4], TaskStatus.valueOf(parts[3]),
                 Duration.ofMinutes(Long.parseLong(parts[5])),
-                LocalDateTime.parse(parts[6], Task.SERIALISATION_FORMATTER));
+                parseDate(parts[6]));
         newEpic.setId(Integer.parseInt(parts[1]));
         return newEpic;
     }
@@ -136,10 +137,20 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     private static SubTask stringToSubTask(String[] parts) {
         SubTask newSubtask = new SubTask(parts[2], parts[4], TaskStatus.valueOf(parts[3]),
                 Duration.ofMinutes(Long.parseLong(parts[5])),
-                LocalDateTime.parse(parts[6], Task.SERIALISATION_FORMATTER),
+                parseDate(parts[6]),
                 Integer.parseInt(parts[7]));
         newSubtask.setId(Integer.parseInt(parts[1]));
         return newSubtask;
+    }
+
+    private static LocalDateTime parseDate(String date) {
+        if (date == null) {
+            return null;
+        }
+        if (date.equals("null")) {
+            return null;
+        }
+        return LocalDateTime.parse(date, Task.SERIALISATION_FORMATTER);
     }
 
     @Override
