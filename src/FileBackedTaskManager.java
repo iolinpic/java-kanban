@@ -95,6 +95,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         for (Epic epic : tm.epics.values()) {
             tm.updateEpicDates(epic);
         }
+        //восстанавливаем prioritized в TreeSet
+        tm.prioritizedTasks.addAll(tm.tasks.values());
+        tm.prioritizedTasks.addAll(tm.epics.values());
+        tm.prioritizedTasks.addAll(tm.subtasks.values());
 
         // выставляем следующий индекс
         tm.updateIndexCounter();
