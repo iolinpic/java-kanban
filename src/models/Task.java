@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
-public class Task {
+public class Task implements Comparable<Task> {
     public static final DateTimeFormatter SERIALISATION_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private int id;
     private String name;
@@ -150,5 +150,10 @@ public class Task {
 
     public static int compareByEndTime(Task task1, Task task2) {
         return task1.getEndTime().compareTo(task2.getEndTime());
+    }
+
+    @Override
+    public int compareTo(Task o) {
+        return startTime.compareTo(o.getStartTime());
     }
 }
