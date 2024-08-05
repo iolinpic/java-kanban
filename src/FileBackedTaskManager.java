@@ -53,7 +53,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public static FileBackedTaskManager loadFromFile(File file) throws ManagerLoadException {
         //на случай если указанного файла не существует
         try {
-            if(file.createNewFile()){
+            if (file.createNewFile()) {
                 //если файл пустой то сразу отдаем дефолтный конструктор
                 return new FileBackedTaskManager(file.getAbsolutePath());
             }
