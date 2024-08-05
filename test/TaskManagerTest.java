@@ -125,8 +125,49 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void epicStatusShouldBeUpdatedByTaskManager(){
+    void epicStatusShouldBeUpdatedByTaskManager() {
         taskManager.addTask(new Epic("epic", "task", TaskStatus.IN_PROGRESS, Duration.ofMinutes(15), LocalDateTime.now().minusDays(1)));
         assertEquals(TaskStatus.NEW, taskManager.getEpic(1).getStatus());
+    }
+
+    @Test
+    void shouldReturnTasksInTimelineOrderIfAddOrderCorrect() {
+        Task task1 = new Task("task1", "task1", TaskStatus.NEW, Duration.ofMinutes(15), LocalDateTime.of(2024, 8, 5, 10, 0));
+        Task task2 = new Task("task2", "task2", TaskStatus.NEW, Duration.ofMinutes(15), LocalDateTime.of(2024, 8, 5, 11, 15));
+        Task task3 = new Task("task3", "task3", TaskStatus.NEW, Duration.ofMinutes(15), LocalDateTime.of(2024, 8, 5, 12, 15));
+        taskManager.addTask(task1);
+        taskManager.addTask(task2);
+        taskManager.addTask(task3);
+        assertEquals(3, taskManager.getPrioritizedTasks().size());
+        assertEquals(task1, taskManager.getPrioritizedTasks().get(0));
+        assertEquals(task2, taskManager.getPrioritizedTasks().get(1));
+        assertEquals(task3, taskManager.getPrioritizedTasks().get(2));
+    }
+
+    @Test
+    void shouldReturnTasksInTimelineOrderIfAddOrderIncorrect() {
+        Task task1 = new Task("task1", "task1", TaskStatus.NEW, Duration.ofMinutes(15), LocalDateTime.of(2024, 8, 5, 11, 0));
+        Task task2 = new Task("task2", "task2", TaskStatus.NEW, Duration.ofMinutes(15), LocalDateTime.of(2024, 8, 5, 9, 15));
+        Task task3 = new Task("task3", "task3", TaskStatus.NEW, Duration.ofMinutes(15), LocalDateTime.of(2024, 8, 5, 12, 15));
+        taskManager.addTask(task1);
+        taskManager.addTask(task2);
+        taskManager.addTask(task3);
+        assertEquals(3, taskManager.getPrioritizedTasks().size());
+        assertEquals(task2, taskManager.getPrioritizedTasks().get(0));
+        assertEquals(task1, taskManager.getPrioritizedTasks().get(1));
+        assertEquals(task3, taskManager.getPrioritizedTasks().get(2));
+    }
+
+    @Test
+    void shouldNotAddTaskIfTimelinesCross() {
+        Task task1 = new Task("task1", "task1", TaskStatus.NEW, Duration.ofMinutes(15), LocalDateTime.of(2024, 8, 5, 11, 0));
+        Task task2 = new Task("task2", "task2", TaskStatus.NEW, Duration.ofMinutes(15), LocalDateTime.of(2024, 8, 5, 11, 15));
+        Task task3 = new Task("task3", "task3", TaskStatus.NEW, Duration.ofMinutes(15), LocalDateTime.of(2024, 8, 5, 12, 15));
+        taskManager.addTask(task1);
+        taskManager.addTask(task2);
+        taskManager.addTask(task3);
+        assertEquals(2, taskManager.getPrioritizedTasks().size());
+        assertEquals(task1, taskManager.getPrioritizedTasks().get(0));
+        assertEquals(task3, taskManager.getPrioritizedTasks().get(1));
     }
 }
