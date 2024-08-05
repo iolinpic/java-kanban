@@ -50,6 +50,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void addTask(Epic epic) {
         epic.setId(getNextIndex());
         epics.put(epic.getId(), epic);
+        updateEpicStatus(epic);
         addToPrioritizedTaskList(epic, false);
     }
 
@@ -276,6 +277,9 @@ public class InMemoryTaskManager implements TaskManager {
      */
     private void updateEpicStatus(Epic epic) {
         List<SubTask> subTasks = getEpicSubTasks(epic);
+        if (subTasks.isEmpty()) {
+            epic.setStatus(TaskStatus.NEW);
+        }
         if (isStatus(TaskStatus.NEW, subTasks)) {
             epic.setStatus(TaskStatus.NEW);
             return;

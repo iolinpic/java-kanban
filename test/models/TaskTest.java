@@ -2,8 +2,10 @@ package models;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import java.time.Duration;
+import java.time.LocalDateTime;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class TaskTest {
 
@@ -17,5 +19,29 @@ class TaskTest {
         task4.setId(2);
         assertEquals(task1, task2);
         assertNotEquals(task3, task4);
+    }
+
+    @Test
+    void timelineIntersectShouldBeTrueIfBordersCross() {
+        Task task1 = new Task("task1", "task1", TaskStatus.NEW, Duration.ofMinutes(15), LocalDateTime.of(2024, 8, 5, 10, 0));
+        Task task2 = new Task("task2", "task2", TaskStatus.NEW, Duration.ofMinutes(15), LocalDateTime.of(2024, 8, 5, 10, 15));
+        assertTrue(Task.isTasksTimelineIntersect(task1, task2));
+        assertTrue(Task.isTasksTimelineIntersect(task2, task1));
+    }
+
+    @Test
+    void timelineIntersectShouldBeFalseIfIntervalsDoesntCross() {
+        Task task1 = new Task("task1", "task1", TaskStatus.NEW, Duration.ofMinutes(15), LocalDateTime.of(2024, 8, 5, 10, 0));
+        Task task2 = new Task("task2", "task2", TaskStatus.NEW, Duration.ofMinutes(15), LocalDateTime.of(2024, 8, 5, 11, 15));
+        assertFalse(Task.isTasksTimelineIntersect(task1, task2));
+        assertFalse(Task.isTasksTimelineIntersect(task2, task1));
+    }
+
+    @Test
+    void timelineIntersectShouldBeTrueIfIntervalsCross() {
+        Task task1 = new Task("task1", "task1", TaskStatus.NEW, Duration.ofMinutes(15), LocalDateTime.of(2024, 8, 5, 10, 0));
+        Task task2 = new Task("task2", "task2", TaskStatus.NEW, Duration.ofMinutes(15), LocalDateTime.of(2024, 8, 5, 10, 10));
+        assertTrue(Task.isTasksTimelineIntersect(task1, task2));
+        assertTrue(Task.isTasksTimelineIntersect(task2, task1));
     }
 }

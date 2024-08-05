@@ -85,4 +85,48 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     //todo  добавить тест на приоритетный список
+
+    @Test
+    void epicStatusShouldBeNewIfAllSubtasksAreNew() {
+        taskManager.addTask(new Epic("epic", "task", TaskStatus.NEW, Duration.ofMinutes(15), LocalDateTime.now().minusDays(1)));
+        taskManager.addTask(new SubTask("Subtask", "task", TaskStatus.NEW, Duration.ofMinutes(15), LocalDateTime.now().minusDays(2), 1));
+        taskManager.addTask(new SubTask("Subtask2", "task", TaskStatus.NEW, Duration.ofMinutes(15), LocalDateTime.now().minusDays(3), 1));
+        assertEquals(TaskStatus.NEW, taskManager.getEpic(1).getStatus());
+    }
+
+    @Test
+    void epicStatusShouldBeDoneIfAllSubtasksAreDone() {
+        taskManager.addTask(new Epic("epic", "task", TaskStatus.NEW, Duration.ofMinutes(15), LocalDateTime.now().minusDays(1)));
+        taskManager.addTask(new SubTask("Subtask", "task", TaskStatus.DONE, Duration.ofMinutes(15), LocalDateTime.now().minusDays(2), 1));
+        taskManager.addTask(new SubTask("Subtask2", "task", TaskStatus.DONE, Duration.ofMinutes(15), LocalDateTime.now().minusDays(3), 1));
+        assertEquals(TaskStatus.DONE, taskManager.getEpic(1).getStatus());
+    }
+
+    @Test
+    void epicStatusShouldBeInProgressIfNotAllSubtasksAreDone() {
+        taskManager.addTask(new Epic("epic", "task", TaskStatus.NEW, Duration.ofMinutes(15), LocalDateTime.now().minusDays(1)));
+        taskManager.addTask(new SubTask("Subtask", "task", TaskStatus.NEW, Duration.ofMinutes(15), LocalDateTime.now().minusDays(2), 1));
+        taskManager.addTask(new SubTask("Subtask2", "task", TaskStatus.DONE, Duration.ofMinutes(15), LocalDateTime.now().minusDays(3), 1));
+        assertEquals(TaskStatus.IN_PROGRESS, taskManager.getEpic(1).getStatus());
+    }
+
+    @Test
+    void epicStatusShouldBeInProgressIfAllSubtasksAreInProgress() {
+        taskManager.addTask(new Epic("epic", "task", TaskStatus.NEW, Duration.ofMinutes(15), LocalDateTime.now().minusDays(1)));
+        taskManager.addTask(new SubTask("Subtask", "task", TaskStatus.IN_PROGRESS, Duration.ofMinutes(15), LocalDateTime.now().minusDays(2), 1));
+        taskManager.addTask(new SubTask("Subtask2", "task", TaskStatus.IN_PROGRESS, Duration.ofMinutes(15), LocalDateTime.now().minusDays(3), 1));
+        assertEquals(TaskStatus.IN_PROGRESS, taskManager.getEpic(1).getStatus());
+    }
+
+    @Test
+    void shouldNotAddSubtaskWithoutEpic() {
+        taskManager.addTask(new SubTask("Subtask", "task", TaskStatus.NEW, Duration.ofMinutes(15), LocalDateTime.now().minusDays(2), 1));
+        assertEquals(0, taskManager.getSubTasks().size());
+    }
+
+    @Test
+    void epicStatusShouldBeUpdatedByTaskManager(){
+        taskManager.addTask(new Epic("epic", "task", TaskStatus.IN_PROGRESS, Duration.ofMinutes(15), LocalDateTime.now().minusDays(1)));
+        assertEquals(TaskStatus.NEW, taskManager.getEpic(1).getStatus());
+    }
 }
