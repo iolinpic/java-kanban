@@ -50,7 +50,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
     }
 
-    public static FileBackedTaskManager loadFromFile(File file) {
+    public static FileBackedTaskManager loadFromFile(File file) throws ManagerLoadException {
         //на случай если указанного файла не существует
         try {
             if(file.createNewFile()){
