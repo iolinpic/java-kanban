@@ -170,4 +170,28 @@ abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(task1, taskManager.getPrioritizedTasks().get(0));
         assertEquals(task3, taskManager.getPrioritizedTasks().get(1));
     }
+
+    @Test
+    void timelineIntersectShouldBeTrueIfBordersCross() {
+        Task task1 = new Task("task1", "task1", TaskStatus.NEW, Duration.ofMinutes(15), LocalDateTime.of(2024, 8, 5, 10, 0));
+        Task task2 = new Task("task2", "task2", TaskStatus.NEW, Duration.ofMinutes(15), LocalDateTime.of(2024, 8, 5, 10, 15));
+        assertTrue(InMemoryTaskManager.isTasksTimelineIntersect(task1, task2));
+        assertTrue(InMemoryTaskManager.isTasksTimelineIntersect(task2, task1));
+    }
+
+    @Test
+    void timelineIntersectShouldBeFalseIfIntervalsDoesntCross() {
+        Task task1 = new Task("task1", "task1", TaskStatus.NEW, Duration.ofMinutes(15), LocalDateTime.of(2024, 8, 5, 10, 0));
+        Task task2 = new Task("task2", "task2", TaskStatus.NEW, Duration.ofMinutes(15), LocalDateTime.of(2024, 8, 5, 11, 15));
+        assertFalse(InMemoryTaskManager.isTasksTimelineIntersect(task1, task2));
+        assertFalse(InMemoryTaskManager.isTasksTimelineIntersect(task2, task1));
+    }
+
+    @Test
+    void timelineIntersectShouldBeTrueIfIntervalsCross() {
+        Task task1 = new Task("task1", "task1", TaskStatus.NEW, Duration.ofMinutes(15), LocalDateTime.of(2024, 8, 5, 10, 0));
+        Task task2 = new Task("task2", "task2", TaskStatus.NEW, Duration.ofMinutes(15), LocalDateTime.of(2024, 8, 5, 10, 10));
+        assertTrue(InMemoryTaskManager.isTasksTimelineIntersect(task1, task2));
+        assertTrue(InMemoryTaskManager.isTasksTimelineIntersect(task2, task1));
+    }
 }

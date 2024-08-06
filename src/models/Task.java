@@ -159,20 +159,6 @@ public class Task implements Comparable<Task> {
         return task1.getEndTime().compareTo(task2.getEndTime());
     }
 
-    public static boolean isTasksTimelineIntersect(Task task1, Task task2) {
-        if (task1 == null || task2 == null || task1.getStartTime() == null || task2.getStartTime() == null || task1.getEndTime() == null) {
-            return false;
-        }
-        if (task1.getStartTime().isEqual(task2.getStartTime())) {
-            return true;
-        }
-        if (task1.getStartTime().isBefore(task2.getStartTime())) {
-            return task1.getEndTime().isAfter(task2.getStartTime()) || task1.getEndTime().isEqual(task2.getStartTime());
-        } else {
-            return isTasksTimelineIntersect(task2, task1);
-        }
-    }
-
     @Override
     public int compareTo(Task o) {
         return startTime.compareTo(o.getStartTime());

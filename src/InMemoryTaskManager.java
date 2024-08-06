@@ -23,6 +23,20 @@ public class InMemoryTaskManager implements TaskManager {
         this.historyManager = Managers.getDefaultHistory();
     }
 
+    public static boolean isTasksTimelineIntersect(Task task1, Task task2) {
+        if (task1 == null || task2 == null || task1.getStartTime() == null || task2.getStartTime() == null || task1.getEndTime() == null) {
+            return false;
+        }
+        if (task1.getStartTime().isEqual(task2.getStartTime())) {
+            return true;
+        }
+        if (task1.getStartTime().isBefore(task2.getStartTime())) {
+            return task1.getEndTime().isAfter(task2.getStartTime()) || task1.getEndTime().isEqual(task2.getStartTime());
+        } else {
+            return isTasksTimelineIntersect(task2, task1);
+        }
+    }
+
     void updateIndexCounter() {
         index = 1;
         for (Integer key : tasks.keySet()) {
@@ -357,7 +371,7 @@ public class InMemoryTaskManager implements TaskManager {
      */
     private boolean isTaskInvalid(Task task, Task updatedTask) {
 //        return false;
-        return getPrioritizedTasks().stream().filter(t -> !t.equals(updatedTask)).anyMatch(t -> Task.isTasksTimelineIntersect(t, task));
+        return getPrioritizedTasks().stream().filter(t -> !t.equals(updatedTask)).anyMatch(t -> isTasksTimelineIntersect(t, task));
     }
 
 
