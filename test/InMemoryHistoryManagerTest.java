@@ -2,6 +2,7 @@ import models.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -52,6 +53,60 @@ class InMemoryHistoryManagerTest {
         historyManager.add(new Task("task12", "task", 12));
         history = historyManager.getHistory();
         assertEquals(12, history.size());
+    }
+
+    @Test
+    void createdHistoryManagerShouldBeEmpty() {
+        assertEquals(0, historyManager.getHistory().size());
+    }
+
+    @Test
+    void addingToEmptyHistoryShouldBeAvailable() {
+        historyManager.add(new Task("task1", "task", 1));
+        assertEquals(1, historyManager.getHistory().size());
+    }
+
+    @Test
+    void removingFromEmptyHistoryShouldBeAvailable() {
+        historyManager.remove(1);
+        assertEquals(0, historyManager.getHistory().size());
+    }
+
+    @Test
+    void removingFromHeadShouldShiftPositionWithoutChangingOrder() {
+        historyManager.add(new Task("task1", "task", 1));
+        historyManager.add(new Task("task2", "task", 2));
+        historyManager.add(new Task("task3", "task", 3));
+        List<Task> history = historyManager.getHistory();
+        assertEquals(3, history.size());
+        historyManager.remove(1);
+        assertEquals(2, historyManager.getHistory().size());
+        assertEquals(history.get(1), historyManager.getHistory().get(0));
+        assertEquals(history.get(2), historyManager.getHistory().get(1));
+    }
+    @Test
+    void removingFromTailShouldSavePositionWithoutChangingOrder() {
+        historyManager.add(new Task("task1", "task", 1));
+        historyManager.add(new Task("task2", "task", 2));
+        historyManager.add(new Task("task3", "task", 3));
+        List<Task> history = historyManager.getHistory();
+        assertEquals(3, history.size());
+        historyManager.remove(3);
+        assertEquals(2, historyManager.getHistory().size());
+        assertEquals(history.get(0), historyManager.getHistory().get(0));
+        assertEquals(history.get(1), historyManager.getHistory().get(1));
+    }
+    @Test
+    void removingFromMiddleShouldChangeTailPositionWithoutChangingOrder() {
+        historyManager.add(new Task("task1", "task", 1));
+        historyManager.add(new Task("task2", "task", 2));
+        historyManager.add(new Task("task3", "task", 3));
+        List<Task> history = historyManager.getHistory();
+        assertEquals(3, history.size());
+        historyManager.remove(2);
+        assertEquals(2, historyManager.getHistory().size());
+        assertEquals(history.get(0), historyManager.getHistory().get(0));
+        assertEquals(history.get(2), historyManager.getHistory().get(1));
     }
 
 }

@@ -4,6 +4,8 @@ import models.*;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
@@ -23,6 +25,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         tm.addTask(new SubTask("sub3", "sub3", 1));
         tm.addTask(new Task("task", "detail"));
         tm.addTask(new Task("task2", "detail2"));
+        tm.addTask(new Task("task2", "detail2"));
         FileBackedTaskManager tm2 = FileBackedTaskManager.loadFromFile(new File("tasks.csv"));
         System.out.println("Список задач идентичен: " + Arrays.equals(tm.getTasks().toArray(), tm2.getTasks().toArray()));
         System.out.println("Список эпиков идентичен: " + Arrays.equals(tm.getEpics().toArray(), tm2.getEpics().toArray()));
@@ -31,7 +34,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private void save() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename, StandardCharsets.UTF_8))) {
-            String labels = "type,id,name,status,description,epicId\n";
+            String labels = "type,id,name,status,description,duration,start,epicId\n";
             writer.write(labels);
             for (Task task : getTasks()) {
                 writer.write(taskToString(task));
@@ -47,15 +50,18 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
     }
 
-    public static FileBackedTaskManager loadFromFile(File file) {
+    public static FileBackedTaskManager loadFromFile(File file) throws ManagerLoadException {
         //на случай если указанного файла не существует
         try {
-            file.createNewFile();
+            if (file.createNewFile()) {
+                //если файл пустой то сразу отдаем дефолтный конструктор
+                return new FileBackedTaskManager(file.getAbsolutePath());
+            }
         } catch (IOException e) {
             throw new ManagerLoadException(e);
         }
 
-        FileBackedTaskManager tm = new FileBackedTaskManager(file.getName());
+        FileBackedTaskManager tm = new FileBackedTaskManager(file.getAbsolutePath());
         try (BufferedReader reader = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8))) {
             while (reader.ready()) {
                 String line = reader.readLine();
@@ -89,6 +95,15 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 tm.epics.get(subTask.getEpicId()).addSubTask(subTask);
             }
         }
+        // пересчитываем endTime для epics
+        for (Epic epic : tm.epics.values()) {
+            tm.updateEpicDates(epic);
+        }
+        //восстанавливаем prioritized в TreeSet
+        tm.prioritizedTasks.addAll(tm.tasks.values().stream().filter(task -> task.getStartTime() != null).toList());
+        tm.prioritizedTasks.addAll(tm.epics.values().stream().filter(task -> task.getStartTime() != null).toList());
+        tm.prioritizedTasks.addAll(tm.subtasks.values().stream().filter(task -> task.getStartTime() != null).toList());
+
         // выставляем следующий индекс
         tm.updateIndexCounter();
         return tm;
@@ -107,21 +122,38 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     private static Task stringToTask(String[] parts) {
-        Task newTask = new Task(parts[2], parts[4], TaskStatus.valueOf(parts[3]));
+        Task newTask = new Task(parts[2], parts[4], TaskStatus.valueOf(parts[3]),
+                Duration.ofMinutes(Long.parseLong(parts[5])),
+                parseDate(parts[6]));
         newTask.setId(Integer.parseInt(parts[1]));
         return newTask;
     }
 
     private static Epic stringToEpic(String[] parts) {
-        Epic newEpic = new Epic(parts[2], parts[4], TaskStatus.valueOf(parts[3]));
+        Epic newEpic = new Epic(parts[2], parts[4], TaskStatus.valueOf(parts[3]),
+                Duration.ofMinutes(Long.parseLong(parts[5])),
+                parseDate(parts[6]));
         newEpic.setId(Integer.parseInt(parts[1]));
         return newEpic;
     }
 
     private static SubTask stringToSubTask(String[] parts) {
-        SubTask newSubtask = new SubTask(parts[2], parts[4], TaskStatus.valueOf(parts[3]), Integer.parseInt(parts[5]));
+        SubTask newSubtask = new SubTask(parts[2], parts[4], TaskStatus.valueOf(parts[3]),
+                Duration.ofMinutes(Long.parseLong(parts[5])),
+                parseDate(parts[6]),
+                Integer.parseInt(parts[7]));
         newSubtask.setId(Integer.parseInt(parts[1]));
         return newSubtask;
+    }
+
+    private static LocalDateTime parseDate(String date) {
+        if (date == null) {
+            return null;
+        }
+        if (date.equals("null")) {
+            return null;
+        }
+        return LocalDateTime.parse(date, Task.SERIALISATION_FORMATTER);
     }
 
     @Override

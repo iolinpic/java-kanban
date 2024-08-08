@@ -1,25 +1,43 @@
 import models.Epic;
 import models.SubTask;
 import models.Task;
+import models.TaskStatus;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class FileBackedTaskManagerTest {
+class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
+
+    @Override
+    void init() {
+        try {
+            taskManager = new FileBackedTaskManager(File.createTempFile("logic", ".csv").getAbsolutePath());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @BeforeEach
+    void setUp() {
+        init();
+    }
 
     private void addTasks(FileBackedTaskManager tm) {
-        tm.addTask(new Epic("epic1", "epic1"));
-        tm.addTask(new Epic("epic2", "epic2"));
-        tm.addTask(new SubTask("sub1", "sub1", 1));
-        tm.addTask(new SubTask("sub2", "sub2", 1));
-        tm.addTask(new SubTask("sub3", "sub3", 1));
-        tm.addTask(new Task("task", "detail"));
-        tm.addTask(new Task("task2", "detail2"));
+        tm.addTask(new Epic("epic1", "epic1", TaskStatus.NEW, Duration.ofMinutes(15), LocalDateTime.now().minusDays(3)));
+        tm.addTask(new Epic("epic2", "epic2", TaskStatus.NEW, Duration.ofMinutes(15), LocalDateTime.now().minusDays(4)));
+        tm.addTask(new SubTask("sub1", "sub1", TaskStatus.NEW, Duration.ofMinutes(15), LocalDateTime.now().minusDays(5), 1));
+        tm.addTask(new SubTask("sub2", "sub2", TaskStatus.NEW, Duration.ofMinutes(15), LocalDateTime.now().minusDays(6), 1));
+        tm.addTask(new SubTask("sub3", "sub3", TaskStatus.NEW, Duration.ofMinutes(15), LocalDateTime.now().minusDays(7), 1));
+        tm.addTask(new Task("task", "detail", TaskStatus.NEW, Duration.ofMinutes(15), LocalDateTime.now().minusDays(1)));
+        tm.addTask(new Task("task2", "detail2", TaskStatus.NEW, Duration.ofMinutes(15), LocalDateTime.now().minusDays(2)));
     }
 
     @Test
