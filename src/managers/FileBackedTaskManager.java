@@ -1,3 +1,5 @@
+package managers;
+
 import exceptions.ManagerLoadException;
 import exceptions.ManagerSaveException;
 import models.*;

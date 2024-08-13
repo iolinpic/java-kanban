@@ -1,3 +1,5 @@
+package managers;
+
 import models.Epic;
 import models.SubTask;
 import models.Task;
@@ -15,7 +17,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     int index;
 
-    InMemoryTaskManager() {
+    public InMemoryTaskManager() {
         index = 1;
         tasks = new HashMap<>();
         subtasks = new HashMap<>();
