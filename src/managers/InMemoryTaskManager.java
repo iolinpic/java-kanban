@@ -1,5 +1,7 @@
 package managers;
 
+import exceptions.InterceptionException;
+import exceptions.NotFoundException;
 import models.Epic;
 import models.SubTask;
 import models.Task;
@@ -53,9 +55,9 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void addTask(Task task) {
+    public void addTask(Task task) throws InterceptionException {
         if (isTaskInvalid(task, null)) {
-            return;
+            throw new InterceptionException();
         }
         task.setId(getNextIndex());
         tasks.put(task.getId(), task);
@@ -71,9 +73,9 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void addTask(SubTask subTask) {
+    public void addTask(SubTask subTask) throws InterceptionException {
         if (isTaskInvalid(subTask, null)) {
-            return;
+            throw new InterceptionException();
         }
         Epic epic = epics.get(subTask.getEpicId());
         if (epic == null) {
@@ -88,11 +90,11 @@ public class InMemoryTaskManager implements TaskManager {
 
 
     @Override
-    public Task getTask(int index) {
+    public Task getTask(int index) throws NotFoundException {
 
         Task task = tasks.get(index);
         if (task == null) {
-            return null;
+            throw new NotFoundException();
         }
         task = new Task(task);
         historyManager.add(task);
@@ -100,10 +102,10 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public SubTask getSubTask(int index) {
+    public SubTask getSubTask(int index) throws NotFoundException {
         SubTask subTask = subtasks.get(index);
         if (subTask == null) {
-            return null;
+            throw new NotFoundException();
         }
         subTask = new SubTask(subTask);
         historyManager.add(subTask);
@@ -111,10 +113,10 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Epic getEpic(int index) {
+    public Epic getEpic(int index) throws NotFoundException {
         Epic epic = epics.get(index);
         if (epic == null) {
-            return null;
+            throw new NotFoundException();
         }
         epic = new Epic(epic);
         historyManager.add(epic);
@@ -198,23 +200,25 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void update(Task task) {
+    public void update(Task task) throws InterceptionException, NotFoundException {
         if (tasks.containsKey(task.getId())) {
             if (isTaskInvalid(task, tasks.get(task.getId()))) {
-                return;
+                throw new InterceptionException();
             }
             tasks.put(task.getId(), task);
             addToPrioritizedTaskList(task, true);
+        } else {
+            throw new NotFoundException();
         }
     }
 
     @Override
-    public void update(SubTask subtask) {
+    public void update(SubTask subtask) throws InterceptionException, NotFoundException {
         if (subtasks.containsKey(subtask.getId())) {
             Epic epic = epics.get(subtask.getEpicId());
             SubTask oldSubtask = subtasks.get(subtask.getId());
             if (isTaskInvalid(subtask, oldSubtask)) {
-                return;
+                throw new InterceptionException();
             }
             if (oldSubtask.getEpicId() != subtask.getEpicId()) {
                 //если в старом сабтаске был другой епик
@@ -226,11 +230,13 @@ public class InMemoryTaskManager implements TaskManager {
             subtasks.put(subtask.getId(), subtask);
             addToPrioritizedTaskList(subtask, true);
             updateEpic(epic);
+        } else {
+            throw new NotFoundException();
         }
     }
 
     @Override
-    public void update(Epic epic) {
+    public void update(Epic epic) throws NotFoundException {
         if (epics.containsKey(epic.getId())) {
             Epic oldEpic = epics.get(epic.getId());
             // удаляем те индексы что не относятся к сабтаскам
@@ -250,7 +256,10 @@ public class InMemoryTaskManager implements TaskManager {
             epics.put(epic.getId(), epic);
             updateEpic(epic);
             addToPrioritizedTaskList(epic, true);
+        } else {
+            throw new NotFoundException();
         }
+
     }
 
     /**

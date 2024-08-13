@@ -1,5 +1,7 @@
 package managers;
 
+import exceptions.InterceptionException;
+import exceptions.NotFoundException;
 import models.Epic;
 import models.SubTask;
 import models.Task;
@@ -7,17 +9,17 @@ import models.Task;
 import java.util.List;
 
 public interface TaskManager {
-    void addTask(Task task);
+    void addTask(Task task) throws InterceptionException;
 
     void addTask(Epic epic);
 
-    void addTask(SubTask subTask);
+    void addTask(SubTask subTask) throws InterceptionException;
 
-    Task getTask(int index);
+    Task getTask(int index) throws NotFoundException;
 
-    SubTask getSubTask(int index);
+    SubTask getSubTask(int index) throws NotFoundException;
 
-    Epic getEpic(int index);
+    Epic getEpic(int index) throws NotFoundException;
 
     List<Task> getTasks();
 
@@ -37,11 +39,11 @@ public interface TaskManager {
 
     void deleteEpic(int index);
 
-    void update(Task task);
+    void update(Task task) throws InterceptionException, NotFoundException;
 
-    void update(SubTask subtask);
+    void update(SubTask subtask) throws InterceptionException, NotFoundException;
 
-    void update(Epic epic);
+    void update(Epic epic) throws NotFoundException;
 
     List<SubTask> getEpicSubTasks(Epic epic);
 
