@@ -36,7 +36,7 @@ public class HttpTaskServer {
         httpServer.bind(new InetSocketAddress(PORT), 0);
         httpServer.createContext("/tasks", new TaskHandler(manager, getGson()));
         httpServer.createContext("/subtasks", new SubTaskHandler(manager, getGson()));
-        httpServer.createContext("/epics", new EpicHandler(manager));
+        httpServer.createContext("/epics", new EpicHandler(manager, getGson()));
         httpServer.createContext("/history", new HistoryHandler(manager));
         httpServer.createContext("/prioritized", new PrioritizedHandler(manager));
         httpServer.start();
