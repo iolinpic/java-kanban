@@ -69,7 +69,7 @@ public class InMemoryTaskManager implements TaskManager {
         epic.setId(getNextIndex());
         epics.put(epic.getId(), epic);
         updateEpicStatus(epic);
-        addToPrioritizedTaskList(epic, false);
+//        addToPrioritizedTaskList(epic, false);
     }
 
     @Override
@@ -85,7 +85,7 @@ public class InMemoryTaskManager implements TaskManager {
         subtasks.put(subTask.getId(), subTask);
         epic.addSubTask(subTask);
         updateEpic(epic);
-        addToPrioritizedTaskList(epic, false);
+        addToPrioritizedTaskList(subTask, false);
     }
 
 
