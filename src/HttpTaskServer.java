@@ -23,7 +23,7 @@ public class HttpTaskServer {
         server.start();
     }
 
-    public HttpTaskServer(TaskManager manager) throws IOException {
+    public HttpTaskServer(TaskManager manager) {
         this.manager = manager;
         this.gson = new GsonBuilder()
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())

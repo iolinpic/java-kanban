@@ -39,6 +39,8 @@ public class TaskHandler extends BaseHttpHandler {
             sendNotFound(exchange);
         } catch (NumberFormatException e) {
             sendAppError(exchange);
+        } catch (InterceptionException e) {
+            sendHasInteractions(exchange);
         }
 
     }
