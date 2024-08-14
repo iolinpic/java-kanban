@@ -14,14 +14,9 @@ import java.time.LocalDateTime;
 
 public class HttpTaskServer {
     private static final int PORT = 8080;
-    private HttpServer httpServer = null;
     private final TaskManager manager;
     private final Gson gson;
-
-    public static void main(String[] args) throws IOException {
-        HttpTaskServer server = new HttpTaskServer(Managers.getDefault());
-        server.start();
-    }
+    private HttpServer httpServer = null;
 
     public HttpTaskServer(TaskManager manager) {
         this.manager = manager;
@@ -29,6 +24,11 @@ public class HttpTaskServer {
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
                 .registerTypeAdapter(Duration.class, new DurationAdapter())
                 .create();
+    }
+
+    public static void main(String[] args) throws IOException {
+        HttpTaskServer server = new HttpTaskServer(Managers.getDefault());
+        server.start();
     }
 
     public void start() throws IOException {

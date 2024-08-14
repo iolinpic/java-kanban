@@ -14,6 +14,12 @@ public class InMemoryHistoryManager implements HistoryManager {
     private Node head;
     private Node tail;
 
+    public InMemoryHistoryManager() {
+        head = null;
+        tail = null;
+        nodes = new HashMap<>();
+    }
+
     private void linkLast(Task task) {
         Node node = new Node(task, null, null);
         if (tail != null) {
@@ -49,13 +55,6 @@ public class InMemoryHistoryManager implements HistoryManager {
         } else {
             node.getNext().setPrev(node.getPrev());
         }
-    }
-
-
-    public InMemoryHistoryManager() {
-        head = null;
-        tail = null;
-        nodes = new HashMap<>();
     }
 
     @Override

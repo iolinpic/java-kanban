@@ -14,9 +14,8 @@ public class InMemoryTaskManager implements TaskManager {
     protected final HashMap<Integer, Task> tasks;
     protected final HashMap<Integer, SubTask> subtasks;
     protected final HashMap<Integer, Epic> epics;
-    private final HistoryManager historyManager;
     protected final Set<Task> prioritizedTasks = new TreeSet<>();
-
+    private final HistoryManager historyManager;
     int index;
 
     public InMemoryTaskManager() {

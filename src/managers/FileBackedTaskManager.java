@@ -34,24 +34,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         System.out.println("Список подзадач идентичен: " + Arrays.equals(tm.getSubTasks().toArray(), tm2.getSubTasks().toArray()));
     }
 
-    private void save() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename, StandardCharsets.UTF_8))) {
-            String labels = "type,id,name,status,description,duration,start,epicId\n";
-            writer.write(labels);
-            for (Task task : getTasks()) {
-                writer.write(taskToString(task));
-            }
-            for (Epic epic : getEpics()) {
-                writer.write(epicToString(epic));
-            }
-            for (SubTask subTask : getSubTasks()) {
-                writer.write(subTaskToString(subTask));
-            }
-        } catch (IOException e) {
-            throw new ManagerSaveException(e);
-        }
-    }
-
     public static FileBackedTaskManager loadFromFile(File file) throws ManagerLoadException {
         //на случай если указанного файла не существует
         try {
@@ -156,6 +138,24 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             return null;
         }
         return LocalDateTime.parse(date, Task.SERIALISATION_FORMATTER);
+    }
+
+    private void save() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename, StandardCharsets.UTF_8))) {
+            String labels = "type,id,name,status,description,duration,start,epicId\n";
+            writer.write(labels);
+            for (Task task : getTasks()) {
+                writer.write(taskToString(task));
+            }
+            for (Epic epic : getEpics()) {
+                writer.write(epicToString(epic));
+            }
+            for (SubTask subTask : getSubTasks()) {
+                writer.write(subTaskToString(subTask));
+            }
+        } catch (IOException e) {
+            throw new ManagerSaveException(e);
+        }
     }
 
     @Override

@@ -72,6 +72,14 @@ public class Task implements Comparable<Task> {
         this.startTime = task.getStartTime();
     }
 
+    public static int compareByStartTime(Task task1, Task task2) {
+        return task1.getStartTime().compareTo(task2.getStartTime());
+    }
+
+    public static int compareByEndTime(Task task1, Task task2) {
+        return task1.getEndTime().compareTo(task2.getEndTime());
+    }
+
     public LocalDateTime getEndTime() {
         if (startTime == null) {
             return null;
@@ -81,6 +89,10 @@ public class Task implements Comparable<Task> {
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -141,10 +153,6 @@ public class Task implements Comparable<Task> {
 
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public Duration getDuration() {
         return duration;
     }
@@ -159,14 +167,6 @@ public class Task implements Comparable<Task> {
 
     public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
-    }
-
-    public static int compareByStartTime(Task task1, Task task2) {
-        return task1.getStartTime().compareTo(task2.getStartTime());
-    }
-
-    public static int compareByEndTime(Task task1, Task task2) {
-        return task1.getEndTime().compareTo(task2.getEndTime());
     }
 
     @Override

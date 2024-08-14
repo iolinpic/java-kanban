@@ -13,8 +13,8 @@ import java.util.List;
 
 public class EpicHandler extends BaseHttpHandler {
 
-    private TaskManager taskManager;
     private final Gson gson;
+    private TaskManager taskManager;
 
     public EpicHandler(TaskManager taskManager, Gson gson) {
         this.taskManager = taskManager;
