@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
+    private static final String FILE_LABELS = "type,id,name,status,description,duration,start,epicId\n";
     private final String filename;
 
     public FileBackedTaskManager(String filename) {
@@ -142,8 +143,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private void save() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename, StandardCharsets.UTF_8))) {
-            String labels = "type,id,name,status,description,duration,start,epicId\n";
-            writer.write(labels);
+            writer.write(FILE_LABELS);
             for (Task task : getTasks()) {
                 writer.write(taskToString(task));
             }
