@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class HistoryEndpointsTest {
 
-    public static final String DEFAULT_URL = "http://localhost:8080/history";
+    private static final String DEFAULT_URL = "http://localhost:8080/history";
     TaskManager manager;
     HttpTaskServer taskServer;
     Gson gson;

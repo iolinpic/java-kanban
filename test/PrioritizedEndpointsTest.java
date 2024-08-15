@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class PrioritizedEndpointsTest {
 
-    public static final String DEFAULT_URL = "http://localhost:8080/prioritized";
+    private static final String DEFAULT_URL = "http://localhost:8080/prioritized";
     TaskManager manager;
     HttpTaskServer taskServer;
     Gson gson;

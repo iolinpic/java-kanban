@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SubTasksEndpointsTest {
 
-    public static final String DEFAULT_URL = "http://localhost:8080/subtasks";
+    private static final String DEFAULT_URL = "http://localhost:8080/subtasks";
     TaskManager manager;
     HttpTaskServer taskServer;
     Gson gson;

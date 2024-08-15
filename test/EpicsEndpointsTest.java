@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class EpicsEndpointsTest {
 
-    public static final String DEFAULT_URL = "http://localhost:8080/epics";
+    private static final String DEFAULT_URL = "http://localhost:8080/epics";
     TaskManager manager;
     HttpTaskServer taskServer;
     Gson gson;
