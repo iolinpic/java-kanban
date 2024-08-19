@@ -1,8 +1,8 @@
+import managers.InMemoryHistoryManager;
 import models.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -84,6 +84,7 @@ class InMemoryHistoryManagerTest {
         assertEquals(history.get(1), historyManager.getHistory().get(0));
         assertEquals(history.get(2), historyManager.getHistory().get(1));
     }
+
     @Test
     void removingFromTailShouldSavePositionWithoutChangingOrder() {
         historyManager.add(new Task("task1", "task", 1));
@@ -96,6 +97,7 @@ class InMemoryHistoryManagerTest {
         assertEquals(history.get(0), historyManager.getHistory().get(0));
         assertEquals(history.get(1), historyManager.getHistory().get(1));
     }
+
     @Test
     void removingFromMiddleShouldChangeTailPositionWithoutChangingOrder() {
         historyManager.add(new Task("task1", "task", 1));

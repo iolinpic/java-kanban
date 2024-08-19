@@ -1,3 +1,7 @@
+import exceptions.InterceptionException;
+import exceptions.NotFoundException;
+import managers.InMemoryTaskManager;
+import managers.TaskManager;
 import models.Epic;
 import models.SubTask;
 import models.Task;
@@ -48,7 +52,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
         taskManager.addTask(task1);
         taskManager.addTask(new Task("task2", "task2"));
         assertNotNull(taskManager.getTask(1));
-        assertNull(taskManager.getTask(3));
+        assertThrows(NotFoundException.class, () -> taskManager.getTask(3));
     }
 
     @Test
@@ -164,7 +168,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
         Task task2 = new Task("task2", "task2", TaskStatus.NEW, Duration.ofMinutes(15), LocalDateTime.of(2024, 8, 5, 11, 15));
         Task task3 = new Task("task3", "task3", TaskStatus.NEW, Duration.ofMinutes(15), LocalDateTime.of(2024, 8, 5, 12, 15));
         taskManager.addTask(task1);
-        taskManager.addTask(task2);
+        assertThrows(InterceptionException.class, () -> taskManager.addTask(task2));
         taskManager.addTask(task3);
         assertEquals(2, taskManager.getPrioritizedTasks().size());
         assertEquals(task1, taskManager.getPrioritizedTasks().get(0));

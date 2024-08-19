@@ -1,3 +1,5 @@
+package managers;
+
 import exceptions.ManagerLoadException;
 import exceptions.ManagerSaveException;
 import models.*;
@@ -9,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
+    private static final String FILE_LABELS = "type,id,name,status,description,duration,start,epicId\n";
     private final String filename;
 
     public FileBackedTaskManager(String filename) {
@@ -20,34 +23,16 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         FileBackedTaskManager tm = new FileBackedTaskManager("tasks.csv");
         tm.addTask(new Epic("epic1", "epic1"));
         tm.addTask(new Epic("epic2", "epic2"));
-        tm.addTask(new SubTask("sub1", "sub1", 1));
-        tm.addTask(new SubTask("sub2", "sub2", 1));
-        tm.addTask(new SubTask("sub3", "sub3", 1));
-        tm.addTask(new Task("task", "detail"));
-        tm.addTask(new Task("task2", "detail2"));
-        tm.addTask(new Task("task2", "detail2"));
+        tm.addTask(new SubTask("sub1", "sub1", TaskStatus.NEW, Duration.ofMinutes(10), LocalDateTime.of(2000, 1, 1, 0, 30), 1));
+        tm.addTask(new SubTask("sub2", "sub2", TaskStatus.NEW, Duration.ofMinutes(10), LocalDateTime.of(2000, 2, 1, 0, 30), 1));
+        tm.addTask(new SubTask("sub3", "sub3", TaskStatus.NEW, Duration.ofMinutes(10), LocalDateTime.of(2000, 3, 1, 0, 30), 1));
+        tm.addTask(new Task("task", "detail", TaskStatus.NEW, Duration.ofMinutes(10), LocalDateTime.of(2000, 4, 1, 0, 30)));
+        tm.addTask(new Task("task2", "detail2", TaskStatus.NEW, Duration.ofMinutes(10), LocalDateTime.of(2000, 5, 1, 0, 30)));
+        tm.addTask(new Task("task2", "detail2", TaskStatus.NEW, Duration.ofMinutes(10), LocalDateTime.of(2000, 6, 1, 0, 30)));
         FileBackedTaskManager tm2 = FileBackedTaskManager.loadFromFile(new File("tasks.csv"));
         System.out.println("Список задач идентичен: " + Arrays.equals(tm.getTasks().toArray(), tm2.getTasks().toArray()));
         System.out.println("Список эпиков идентичен: " + Arrays.equals(tm.getEpics().toArray(), tm2.getEpics().toArray()));
         System.out.println("Список подзадач идентичен: " + Arrays.equals(tm.getSubTasks().toArray(), tm2.getSubTasks().toArray()));
-    }
-
-    private void save() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename, StandardCharsets.UTF_8))) {
-            String labels = "type,id,name,status,description,duration,start,epicId\n";
-            writer.write(labels);
-            for (Task task : getTasks()) {
-                writer.write(taskToString(task));
-            }
-            for (Epic epic : getEpics()) {
-                writer.write(epicToString(epic));
-            }
-            for (SubTask subTask : getSubTasks()) {
-                writer.write(subTaskToString(subTask));
-            }
-        } catch (IOException e) {
-            throw new ManagerSaveException(e);
-        }
     }
 
     public static FileBackedTaskManager loadFromFile(File file) throws ManagerLoadException {
@@ -154,6 +139,23 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             return null;
         }
         return LocalDateTime.parse(date, Task.SERIALISATION_FORMATTER);
+    }
+
+    private void save() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename, StandardCharsets.UTF_8))) {
+            writer.write(FILE_LABELS);
+            for (Task task : getTasks()) {
+                writer.write(taskToString(task));
+            }
+            for (Epic epic : getEpics()) {
+                writer.write(epicToString(epic));
+            }
+            for (SubTask subTask : getSubTasks()) {
+                writer.write(subTaskToString(subTask));
+            }
+        } catch (IOException e) {
+            throw new ManagerSaveException(e);
+        }
     }
 
     @Override
